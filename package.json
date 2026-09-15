@@ -1,0 +1,30 @@
+{
+  "name": "qlscvaqlbti_be",
+  "version": "1.0.0",
+  "description": "Basic backend starter for QLSCvaQLBTI",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "backend"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.24.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const routes = require("./routes");
-const { notFoundHandler, errorHandler } = require("./middlewares/error.middleware");
+const { xuLyKhongTimThay, xuLyLoi } = require("./middlewares/xu_ly_loi.middleware");
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 app.use("/api", routes);
 
-app.use(notFoundHandler);
-app.use(errorHandler);
+app.use(xuLyKhongTimThay);
+app.use(xuLyLoi);
 
 module.exports = app;

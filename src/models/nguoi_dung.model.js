@@ -1,9 +1,15 @@
-const pool = require("../config/database").pool;
+const { pool } = require("../config/database");
+const VAI_TRO = require("../constants/vai_tro");
+const TRANG_THAI_NGUOI_DUNG = require("../constants/trang_thai_nguoi_dung");
 
-// timnguoidungquaemail
-async function timTheoEmail(email) {
-  const [rows] = await pool.execute;
-  (`
+function layBoThucThi(connection) {
+  return connection || pool;
+}
+
+async function timTheoEmail(email, connection = null) {
+  const boThucThi = layBoThucThi(connection);
+  const [rows] = await boThucThi.execute(
+    `
       SELECT
         id,
         ho_ten,
@@ -19,16 +25,18 @@ async function timTheoEmail(email) {
       WHERE email = ?
       LIMIT 1
     `,
-    [email]);
+    [email]
+  );
+
   return rows[0] || null;
 }
 
-// timnguoidungquaid
-async function timTheoId(id) {
-  const [rows] = await pool.execute(
+async function timTheoId(id, connection = null) {
+  const boThucThi = layBoThucThi(connection);
+  const [rows] = await boThucThi.execute(
     `
-      SELECT    
-     id,
+      SELECT
+        id,
         ho_ten,
         email,
         so_dien_thoai,
@@ -41,19 +49,42 @@ async function timTheoId(id) {
       WHERE id = ?
       LIMIT 1
     `,
-    [id],
+    [id]
   );
 
   return rows[0] || null;
 }
 
-// layds nguoi dung tim kiem, loc phan trang
+async function timTheoIdCoMatKhau(id) {
+  const [rows] = await pool.execute(
+    `
+      SELECT
+        id,
+        ho_ten,
+        email,
+        mat_khau,
+        so_dien_thoai,
+        anh_dai_dien,
+        vai_tro,
+        trang_thai,
+        ngay_tao,
+        ngay_cap_nhat
+      FROM nguoi_dung
+      WHERE id = ?
+      LIMIT 1
+    `,
+    [id]
+  );
+
+  return rows[0] || null;
+}
+
 async function layDanhSachNguoiDung({
   tuKhoa = "",
   vaiTro = null,
   trangThai = null,
-  gioiHan = 20,
-  boQua = 0,
+  gioiHan = 10,
+  boQua = 0
 }) {
   let dieuKien = `
     WHERE (
@@ -92,17 +123,16 @@ async function layDanhSachNguoiDung({
       LIMIT ?
       OFFSET ?
     `,
-    [...thamSo, gioiHan, boQua],
+    [...thamSo, gioiHan, boQua]
   );
 
   return rows;
 }
 
-// demnguoidungtheodiuekienloc
 async function demTongNguoiDung({
   tuKhoa = "",
   vaiTro = null,
-  trangThai = null,
+  trangThai = null
 }) {
   let dieuKien = `
     WHERE (
@@ -132,12 +162,42 @@ async function demTongNguoiDung({
       FROM nguoi_dung
       ${dieuKien}
     `,
-    thamSo,
+    thamSo
   );
 
   return rows[0].tong;
 }
-// Tao nguoi dung moi
+
+async function demTongTatCaNguoiDung(connection = null) {
+  const boThucThi = layBoThucThi(connection);
+  const [rows] = await boThucThi.execute(
+    `
+      SELECT COUNT(*) AS tong
+      FROM nguoi_dung
+    `
+  );
+
+  return rows[0].tong;
+}
+
+async function khoaKhoiTaoAdminDauTien(connection, tenKhoa) {
+  const [rows] = await connection.execute(
+    "SELECT GET_LOCK(?, 10) AS da_khoa",
+    [tenKhoa]
+  );
+
+  return Number(rows[0].da_khoa) === 1;
+}
+
+async function moKhoaKhoiTaoAdminDauTien(connection, tenKhoa) {
+  const [rows] = await connection.execute(
+    "SELECT RELEASE_LOCK(?) AS da_mo_khoa",
+    [tenKhoa]
+  );
+
+  return Number(rows[0].da_mo_khoa) === 1;
+}
+
 async function taoNguoiDung({
   hoTen,
   email,
@@ -145,7 +205,7 @@ async function taoNguoiDung({
   soDienThoai = null,
   anhDaiDien = null,
   vaiTro,
-  trangThai = "HOAT_DONG",
+  trangThai = TRANG_THAI_NGUOI_DUNG.HOAT_DONG
 }) {
   const [ketQua] = await pool.execute(
     `
@@ -160,16 +220,15 @@ async function taoNguoiDung({
       )
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-    [hoTen, email, matKhau, soDienThoai, anhDaiDien, vaiTro, trangThai],
+    [hoTen, email, matKhau, soDienThoai, anhDaiDien, vaiTro, trangThai]
   );
 
   return ketQua.insertId;
 }
 
-// Cap nhat thong tin nguoi dung
 async function capNhatNguoiDung(
   id,
-  { hoTen, email, soDienThoai = null, anhDaiDien = null, vaiTro },
+  { hoTen, email, soDienThoai = null, anhDaiDien = null, vaiTro }
 ) {
   const [ketQua] = await pool.execute(
     `
@@ -182,13 +241,12 @@ async function capNhatNguoiDung(
         vai_tro = ?
       WHERE id = ?
     `,
-    [hoTen, email, soDienThoai, anhDaiDien, vaiTro, id],
+    [hoTen, email, soDienThoai, anhDaiDien, vaiTro, id]
   );
 
   return ketQua.affectedRows;
 }
 
-// Cap nhat trang thai tai khoan
 async function capNhatTrangThai(id, trangThai) {
   const [ketQua] = await pool.execute(
     `
@@ -196,13 +254,12 @@ async function capNhatTrangThai(id, trangThai) {
       SET trang_thai = ?
       WHERE id = ?
     `,
-    [trangThai, id],
+    [trangThai, id]
   );
 
   return ketQua.affectedRows;
 }
 
-// Cap nhat mat khau
 async function capNhatMatKhau(id, matKhauDaBam) {
   const [ketQua] = await pool.execute(
     `
@@ -210,21 +267,21 @@ async function capNhatMatKhau(id, matKhauDaBam) {
       SET mat_khau = ?
       WHERE id = ?
     `,
-    [matKhauDaBam, id],
+    [matKhauDaBam, id]
   );
 
   return ketQua.affectedRows;
 }
 
-// Dem so quan tri vien dang hoat dong
 async function demQuanTriVienHoatDong() {
   const [rows] = await pool.execute(
     `
       SELECT COUNT(*) AS tong
       FROM nguoi_dung
-      WHERE vai_tro = 'QUAN_TRI_VIEN'
-        AND trang_thai = 'HOAT_DONG'
+      WHERE vai_tro = ?
+        AND trang_thai = ?
     `,
+    [VAI_TRO.QUAN_TRI_VIEN, TRANG_THAI_NGUOI_DUNG.HOAT_DONG]
   );
 
   return rows[0].tong;
@@ -233,11 +290,15 @@ async function demQuanTriVienHoatDong() {
 module.exports = {
   timTheoEmail,
   timTheoId,
+  timTheoIdCoMatKhau,
   layDanhSachNguoiDung,
   demTongNguoiDung,
+  demTongTatCaNguoiDung,
+  khoaKhoiTaoAdminDauTien,
+  moKhoaKhoiTaoAdminDauTien,
   taoNguoiDung,
   capNhatNguoiDung,
   capNhatTrangThai,
   capNhatMatKhau,
-  demQuanTriVienHoatDong,
+  demQuanTriVienHoatDong
 };

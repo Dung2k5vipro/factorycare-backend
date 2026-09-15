@@ -1,7 +1,7 @@
 const VAI_TRO = {
   QUAN_TRI_VIEN: "QUAN_TRI_VIEN",
   KY_THUAT_VIEN: "KY_THUAT_VIEN",
-  NHAN_VIEN: "NHAN_VIEN",
+  NHAN_VIEN: "NHAN_VIEN"
 };
 
 module.exports = VAI_TRO;

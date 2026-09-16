@@ -5,6 +5,7 @@ const loNhapRoutes = require("./lo_nhap.routes");
 const loaiThietBiRoutes = require("./loai_thiet_bi.routes");
 const nguoiDungRoutes = require("./nguoi_dung.routes");
 const nhaCungCapRoutes = require("./nha_cung_cap.routes");
+const suCoRoutes = require("./su_co.routes");
 const thietBiRoutes = require("./thiet_bi.routes");
 const viTriRoutes = require("./vi_tri.routes");
 const xacThucRoutes = require("./xac_thuc.routes");
@@ -19,5 +20,6 @@ router.use("/vi-tri", viTriRoutes);
 router.use("/nha-cung-cap", nhaCungCapRoutes);
 router.use("/lo-nhap", loNhapRoutes);
 router.use("/thiet-bi", thietBiRoutes);
+router.use("/su-co", suCoRoutes);
 
 module.exports = router;

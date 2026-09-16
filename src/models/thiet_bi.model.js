@@ -409,8 +409,9 @@ async function capNhatBaoHanh(id, {
   return ketQua.affectedRows;
 }
 
-async function capNhatTrangThai(id, trangThai) {
-  const [ketQua] = await pool.execute(
+async function capNhatTrangThai(id, trangThai, connection = null) {
+  const boThucThi = layBoThucThi(connection);
+  const [ketQua] = await boThucThi.execute(
     `
       UPDATE thiet_bi
       SET trang_thai = ?

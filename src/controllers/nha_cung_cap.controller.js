@@ -6,7 +6,7 @@ async function layDanhSachNhaCungCap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay danh sach nha cung cap thanh cong",
+      thongBao: "Lấy danh sách nhà cung cấp thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -20,7 +20,7 @@ async function layChiTietNhaCungCap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay chi tiet nha cung cap thanh cong",
+      thongBao: "Lấy chi tiết nhà cung cấp thành công",
       duLieu: nhaCungCap
     });
   } catch (loi) {
@@ -34,7 +34,7 @@ async function taoNhaCungCap(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Tao nha cung cap thanh cong",
+      thongBao: "Tạo nhà cung cấp thành công",
       duLieu: nhaCungCap
     });
   } catch (loi) {
@@ -48,7 +48,7 @@ async function capNhatNhaCungCap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Cap nhat nha cung cap thanh cong",
+      thongBao: "Cập nhật nhà cung cấp thành công",
       duLieu: nhaCungCap
     });
   } catch (loi) {
@@ -62,7 +62,7 @@ async function xoaNhaCungCap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Xoa nha cung cap thanh cong",
+      thongBao: "Xóa nhà cung cấp thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -76,7 +76,7 @@ async function layLoNhapTheoNhaCungCap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay lo nhap theo nha cung cap thanh cong",
+      thongBao: "Lấy lô nhập theo nhà cung cấp thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -90,7 +90,7 @@ async function layThietBiTheoNhaCungCap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay thiet bi theo nha cung cap thanh cong",
+      thongBao: "Lấy thiết bị theo nhà cung cấp thành công",
       duLieu: ketQua
     });
   } catch (loi) {

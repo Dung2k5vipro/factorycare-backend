@@ -6,7 +6,7 @@ async function layDanhSachViTri(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay danh sach vi tri thanh cong",
+      thongBao: "Lấy danh sách vị trí thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -20,7 +20,7 @@ async function layCayViTri(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay cay vi tri thanh cong",
+      thongBao: "Lấy cây vị trí thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -34,7 +34,7 @@ async function layChiTietViTri(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay chi tiet vi tri thanh cong",
+      thongBao: "Lấy chi tiết vị trí thành công",
       duLieu: viTri
     });
   } catch (loi) {
@@ -48,7 +48,7 @@ async function taoViTri(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Tao vi tri thanh cong",
+      thongBao: "Tạo vị trí thành công",
       duLieu: viTri
     });
   } catch (loi) {
@@ -62,7 +62,7 @@ async function capNhatViTri(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Cap nhat vi tri thanh cong",
+      thongBao: "Cập nhật vị trí thành công",
       duLieu: viTri
     });
   } catch (loi) {
@@ -76,7 +76,7 @@ async function xoaViTri(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Xoa vi tri thanh cong",
+      thongBao: "Xóa vị trí thành công",
       duLieu: ketQua
     });
   } catch (loi) {

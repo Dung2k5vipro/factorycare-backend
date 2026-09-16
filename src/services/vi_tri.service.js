@@ -32,7 +32,7 @@ function layIdHopLe(id, tenDoiTuong) {
   const idDaChuyen = Number(id);
 
   if (!Number.isInteger(idDaChuyen) || idDaChuyen <= 0) {
-    throw taoLoi(`${tenDoiTuong} khong hop le`, 400);
+    throw taoLoi(`${tenDoiTuong} không hợp lệ`, 400);
   }
 
   return idDaChuyen;
@@ -55,7 +55,7 @@ function layThongTinPhanTrang(query = {}) {
   const soBanGhiMoiTrang = Number(query.limit !== undefined ? query.limit : query.gioiHan || 10);
 
   if (!Number.isInteger(trangHienTai) || trangHienTai < 1) {
-    throw taoLoi("Trang khong hop le", 400);
+    throw taoLoi("Trang không hợp lệ", 400);
   }
 
   if (
@@ -63,7 +63,7 @@ function layThongTinPhanTrang(query = {}) {
     soBanGhiMoiTrang < 1 ||
     soBanGhiMoiTrang > 100
   ) {
-    throw taoLoi("Gioi han khong hop le", 400);
+    throw taoLoi("Giới hạn không hợp lệ", 400);
   }
 
   return {
@@ -77,14 +77,14 @@ function chuanHoaLoaiViTri(loaiViTri) {
   const loaiViTriChuanHoa = chuanHoaChuoi(loaiViTri);
 
   if (!loaiViTriChuanHoa) {
-    throw taoLoi("Loai vi tri khong duoc de trong", 400);
+    throw taoLoi("Loại vị trí không được để trống", 400);
   }
 
   const loaiViTriVietHoa = loaiViTriChuanHoa.toUpperCase();
   const loaiViTriLuu = loaiViTriVietHoa === "O_MAY" ? LOAI_VI_TRI.KHU_VUC : loaiViTriVietHoa;
 
   if (!DANH_SACH_LOAI_VI_TRI.includes(loaiViTriLuu)) {
-    throw taoLoi("Loai vi tri khong hop le", 400);
+    throw taoLoi("Loại vị trí không hợp lệ", 400);
   }
 
   return loaiViTriLuu;
@@ -121,7 +121,7 @@ function layViTriChaIdTuQuery(query = {}) {
 
   const giaTri = query.viTriChaId !== undefined ? query.viTriChaId : query.vi_tri_cha_id;
 
-  return layIdTuyChon(giaTri, "Vi tri cha");
+  return layIdTuyChon(giaTri, "Vị trí cha");
 }
 
 async function kiemTraTrungTenTrongCungCap(tenViTri, viTriChaId, boQuaId = null) {
@@ -134,7 +134,7 @@ async function kiemTraTrungTenTrongCungCap(tenViTri, viTriChaId, boQuaId = null)
   });
 
   if (viTriBiTrung) {
-    throw taoLoi("Ten vi tri da ton tai trong cung cap cha", 409);
+    throw taoLoi("Tên vị trí đã tồn tại trong cùng cấp cha", 409);
   }
 }
 
@@ -147,7 +147,7 @@ async function kiemTraKhongTaoVongLap(viTriId, viTriChaId) {
 
   while (idDangKiemTra) {
     if (Number(idDangKiemTra) === Number(viTriId)) {
-      throw taoLoi("Khong duoc chon vi tri con lam vi tri cha", 400);
+      throw taoLoi("Không được chọn vị trí con làm vị trí cha", 400);
     }
 
     const viTri = await viTriModel.timTheoId(idDangKiemTra);
@@ -160,7 +160,7 @@ async function kiemTraPhanCapViTri(loaiViTri, viTriChaId, viTriIdDangSua = null)
 
   if (loaiViTri === LOAI_VI_TRI.NHA_MAY) {
     if (viTriChaId) {
-      throw taoLoi("Nha may khong duoc co vi tri cha", 400);
+      throw taoLoi("Nhà máy không được có vị trí cha", 400);
     }
 
     return null;
@@ -171,13 +171,13 @@ async function kiemTraPhanCapViTri(loaiViTri, viTriChaId, viTriIdDangSua = null)
   }
 
   if (!viTriChaId) {
-    throw taoLoi("Vi tri cha khong duoc de trong", 400);
+    throw taoLoi("Vị trí cha không được để trống", 400);
   }
 
   const viTriCha = await viTriModel.timTheoId(viTriChaId);
 
   if (!viTriCha) {
-    throw taoLoi("Vi tri cha khong ton tai", 400);
+    throw taoLoi("Vị trí cha không tồn tại", 400);
   }
 
   const loaiChaHopLe = {
@@ -188,7 +188,7 @@ async function kiemTraPhanCapViTri(loaiViTri, viTriChaId, viTriIdDangSua = null)
   const danhSachLoaiChaHopLe = loaiChaHopLe[loaiViTri] || [];
 
   if (!danhSachLoaiChaHopLe.includes(viTriCha.loai_vi_tri)) {
-    throw taoLoi("Phan cap vi tri khong hop le", 400);
+    throw taoLoi("Phân cấp vị trí không hợp lệ", 400);
   }
 
   return viTriCha;
@@ -254,11 +254,11 @@ async function layCayViTri() {
 }
 
 async function layChiTietViTri(id) {
-  const viTriId = layIdHopLe(id, "Id vi tri");
+  const viTriId = layIdHopLe(id, "Id vị trí");
   const viTri = await viTriModel.timTheoId(viTriId);
 
   if (!viTri) {
-    throw taoLoi("Khong tim thay vi tri", 404);
+    throw taoLoi("Không tìm thấy vị trí", 404);
   }
 
   return dinhDangViTri(viTri);
@@ -273,12 +273,12 @@ async function taoViTri(duLieu = {}) {
   const loaiViTri = chuanHoaLoaiViTri(truongLoaiViTri ? duLieu[truongLoaiViTri] : undefined);
   const viTriChaId = layIdTuyChon(
     truongViTriChaId ? duLieu[truongViTriChaId] : undefined,
-    "Vi tri cha"
+    "Vị trí cha"
   );
   const moTa = chuanHoaChuoi(truongMoTa ? duLieu[truongMoTa] : undefined);
 
   if (!tenViTri) {
-    throw taoLoi("Ten vi tri khong duoc de trong", 400);
+    throw taoLoi("Tên vị trí không được để trống", 400);
   }
 
   const viTriChaHopLe = await kiemTraPhanCapViTri(loaiViTri, viTriChaId);
@@ -296,11 +296,11 @@ async function taoViTri(duLieu = {}) {
 }
 
 async function capNhatViTri(id, duLieu = {}) {
-  const viTriId = layIdHopLe(id, "Id vi tri");
+  const viTriId = layIdHopLe(id, "Id vị trí");
   const viTriHienTai = await viTriModel.timTheoId(viTriId);
 
   if (!viTriHienTai) {
-    throw taoLoi("Khong tim thay vi tri", 404);
+    throw taoLoi("Không tìm thấy vị trí", 404);
   }
 
   const truongTenViTri = layTenTruongTrongDuLieu(duLieu, ["tenViTri", "ten_vi_tri"]);
@@ -314,14 +314,14 @@ async function capNhatViTri(id, duLieu = {}) {
     ? chuanHoaLoaiViTri(duLieu[truongLoaiViTri])
     : viTriHienTai.loai_vi_tri;
   const viTriChaId = truongViTriChaId
-    ? layIdTuyChon(duLieu[truongViTriChaId], "Vi tri cha")
+    ? layIdTuyChon(duLieu[truongViTriChaId], "Vị trí cha")
     : viTriHienTai.vi_tri_cha_id;
   const moTa = truongMoTa
     ? chuanHoaChuoi(duLieu[truongMoTa])
     : viTriHienTai.mo_ta;
 
   if (!tenViTri) {
-    throw taoLoi("Ten vi tri khong duoc de trong", 400);
+    throw taoLoi("Tên vị trí không được để trống", 400);
   }
 
   const viTriChaHopLe = await kiemTraPhanCapViTri(loaiViTri, viTriChaId, viTriId);
@@ -343,11 +343,11 @@ async function capNhatViTri(id, duLieu = {}) {
 }
 
 async function xoaViTri(id) {
-  const viTriId = layIdHopLe(id, "Id vi tri");
+  const viTriId = layIdHopLe(id, "Id vị trí");
   const viTri = await viTriModel.timTheoId(viTriId);
 
   if (!viTri) {
-    throw taoLoi("Khong tim thay vi tri", 404);
+    throw taoLoi("Không tìm thấy vị trí", 404);
   }
 
   const [soViTriCon, soThietBi, soLichSuDieuChuyen] = await Promise.all([
@@ -357,7 +357,7 @@ async function xoaViTri(id) {
   ]);
 
   if (soViTriCon > 0 || soThietBi > 0 || soLichSuDieuChuyen > 0) {
-    throw taoLoi("Khong the xoa vi tri da phat sinh du lieu", 409, {
+    throw taoLoi("Không thể xóa vị trí đã phát sinh dữ liệu", 409, {
       soViTriCon,
       soThietBi,
       soLichSuDieuChuyen

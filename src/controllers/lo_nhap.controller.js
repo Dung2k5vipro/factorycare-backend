@@ -25,7 +25,7 @@ async function layDanhSachLoNhap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay danh sach lo nhap thanh cong",
+      thongBao: "Lấy danh sách lô nhập thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -39,7 +39,7 @@ async function layChiTietLoNhap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay chi tiet lo nhap thanh cong",
+      thongBao: "Lấy chi tiết lô nhập thành công",
       duLieu: loNhap
     });
   } catch (loi) {
@@ -56,7 +56,7 @@ async function taoLoNhap(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Tao lo nhap thanh cong",
+      thongBao: "Tạo lô nhập thành công",
       duLieu: loNhap
     });
   } catch (loi) {
@@ -76,7 +76,7 @@ async function capNhatLoNhap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Cap nhat lo nhap thanh cong",
+      thongBao: "Cập nhật lô nhập thành công",
       duLieu: loNhap
     });
   } catch (loi) {
@@ -92,7 +92,7 @@ async function xoaLoNhap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Xoa lo nhap thanh cong",
+      thongBao: "Xóa lô nhập thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -106,7 +106,7 @@ async function layThietBiTheoLoNhap(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay thiet bi theo lo nhap thanh cong",
+      thongBao: "Lấy thiết bị theo lô nhập thành công",
       duLieu: ketQua
     });
   } catch (loi) {

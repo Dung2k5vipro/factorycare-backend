@@ -25,7 +25,7 @@ function layIdHopLe(id, tenDoiTuong) {
   const idDaChuyen = Number(id);
 
   if (!Number.isInteger(idDaChuyen) || idDaChuyen <= 0) {
-    throw taoLoi(`${tenDoiTuong} khong hop le`, 400);
+    throw taoLoi(`${tenDoiTuong} không hợp lệ`, 400);
   }
 
   return idDaChuyen;
@@ -36,7 +36,7 @@ function layThongTinPhanTrang(query = {}) {
   const soBanGhiMoiTrang = Number(query.limit !== undefined ? query.limit : query.gioiHan || 10);
 
   if (!Number.isInteger(trangHienTai) || trangHienTai < 1) {
-    throw taoLoi("Trang khong hop le", 400);
+    throw taoLoi("Trang không hợp lệ", 400);
   }
 
   if (
@@ -44,7 +44,7 @@ function layThongTinPhanTrang(query = {}) {
     soBanGhiMoiTrang < 1 ||
     soBanGhiMoiTrang > 100
   ) {
-    throw taoLoi("Gioi han khong hop le", 400);
+    throw taoLoi("Giới hạn không hợp lệ", 400);
   }
 
   return {
@@ -62,7 +62,7 @@ function kiemTraEmail(email) {
   const emailChuanHoa = chuanHoaChuoi(email).toLowerCase();
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailChuanHoa)) {
-    throw taoLoi("Email nha cung cap khong hop le", 400);
+    throw taoLoi("Email nhà cung cấp không hợp lệ", 400);
   }
 
   return emailChuanHoa;
@@ -149,7 +149,7 @@ function layDuLieuNhaCungCapHopLe(duLieu = {}, nhaCungCapHienTai = null) {
     : nhaCungCapHienTai && nhaCungCapHienTai.ghi_chu;
 
   if (!tenNhaCungCap) {
-    throw taoLoi("Ten nha cung cap khong duoc de trong", 400);
+    throw taoLoi("Tên nhà cung cấp không được để trống", 400);
   }
 
   return {
@@ -187,11 +187,11 @@ async function layDanhSachNhaCungCap(query = {}) {
 }
 
 async function layChiTietNhaCungCap(id) {
-  const nhaCungCapId = layIdHopLe(id, "Id nha cung cap");
+  const nhaCungCapId = layIdHopLe(id, "Id nhà cung cấp");
   const nhaCungCap = await nhaCungCapModel.timTheoId(nhaCungCapId);
 
   if (!nhaCungCap) {
-    throw taoLoi("Khong tim thay nha cung cap", 404);
+    throw taoLoi("Không tìm thấy nhà cung cấp", 404);
   }
 
   const [soLoNhap, soThietBi] = await Promise.all([
@@ -213,11 +213,11 @@ async function taoNhaCungCap(duLieu = {}) {
 }
 
 async function capNhatNhaCungCap(id, duLieu = {}) {
-  const nhaCungCapId = layIdHopLe(id, "Id nha cung cap");
+  const nhaCungCapId = layIdHopLe(id, "Id nhà cung cấp");
   const nhaCungCapHienTai = await nhaCungCapModel.timTheoId(nhaCungCapId);
 
   if (!nhaCungCapHienTai) {
-    throw taoLoi("Khong tim thay nha cung cap", 404);
+    throw taoLoi("Không tìm thấy nhà cung cấp", 404);
   }
 
   const duLieuHopLe = layDuLieuNhaCungCapHopLe(duLieu, nhaCungCapHienTai);
@@ -227,11 +227,11 @@ async function capNhatNhaCungCap(id, duLieu = {}) {
 }
 
 async function xoaNhaCungCap(id) {
-  const nhaCungCapId = layIdHopLe(id, "Id nha cung cap");
+  const nhaCungCapId = layIdHopLe(id, "Id nhà cung cấp");
   const nhaCungCap = await nhaCungCapModel.timTheoId(nhaCungCapId);
 
   if (!nhaCungCap) {
-    throw taoLoi("Khong tim thay nha cung cap", 404);
+    throw taoLoi("Không tìm thấy nhà cung cấp", 404);
   }
 
   const [soLoNhap, soThietBi] = await Promise.all([
@@ -240,7 +240,7 @@ async function xoaNhaCungCap(id) {
   ]);
 
   if (soLoNhap > 0 || soThietBi > 0) {
-    throw taoLoi("Khong the xoa nha cung cap da phat sinh du lieu", 409, {
+    throw taoLoi("Không thể xóa nhà cung cấp đã phát sinh dữ liệu", 409, {
       soLoNhap,
       soThietBi
     });
@@ -255,12 +255,12 @@ async function xoaNhaCungCap(id) {
 }
 
 async function layLoNhapTheoNhaCungCap(id, query = {}) {
-  const nhaCungCapId = layIdHopLe(id, "Id nha cung cap");
+  const nhaCungCapId = layIdHopLe(id, "Id nhà cung cấp");
   const { trangHienTai, soBanGhiMoiTrang, boQua } = layThongTinPhanTrang(query);
   const nhaCungCap = await nhaCungCapModel.timTheoId(nhaCungCapId);
 
   if (!nhaCungCap) {
-    throw taoLoi("Khong tim thay nha cung cap", 404);
+    throw taoLoi("Không tìm thấy nhà cung cấp", 404);
   }
 
   const [danhSachLoNhap, tongBanGhi] = await Promise.all([
@@ -285,12 +285,12 @@ async function layLoNhapTheoNhaCungCap(id, query = {}) {
 }
 
 async function layThietBiTheoNhaCungCap(id, query = {}) {
-  const nhaCungCapId = layIdHopLe(id, "Id nha cung cap");
+  const nhaCungCapId = layIdHopLe(id, "Id nhà cung cấp");
   const { trangHienTai, soBanGhiMoiTrang, boQua } = layThongTinPhanTrang(query);
   const nhaCungCap = await nhaCungCapModel.timTheoId(nhaCungCapId);
 
   if (!nhaCungCap) {
-    throw taoLoi("Khong tim thay nha cung cap", 404);
+    throw taoLoi("Không tìm thấy nhà cung cấp", 404);
   }
 
   const [danhSachThietBi, tongBanGhi] = await Promise.all([

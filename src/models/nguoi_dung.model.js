@@ -55,6 +55,30 @@ async function timTheoId(id, connection = null) {
   return rows[0] || null;
 }
 
+async function timTheoIdDeCapNhat(id, connection) {
+  const [rows] = await connection.execute(
+    `
+      SELECT
+        id,
+        ho_ten,
+        email,
+        so_dien_thoai,
+        anh_dai_dien,
+        vai_tro,
+        trang_thai,
+        ngay_tao,
+        ngay_cap_nhat
+      FROM nguoi_dung
+      WHERE id = ?
+      LIMIT 1
+      FOR UPDATE
+    `,
+    [id]
+  );
+
+  return rows[0] || null;
+}
+
 async function timTheoIdCoMatKhau(id) {
   const [rows] = await pool.execute(
     `
@@ -287,9 +311,39 @@ async function demQuanTriVienHoatDong() {
   return rows[0].tong;
 }
 
+async function layDanhSachTheoVaiTroVaTrangThai(
+  vaiTro,
+  trangThai,
+  connection = null
+) {
+  const boThucThi = layBoThucThi(connection);
+  const [rows] = await boThucThi.execute(
+    `
+      SELECT
+        id,
+        ho_ten,
+        email,
+        so_dien_thoai,
+        anh_dai_dien,
+        vai_tro,
+        trang_thai,
+        ngay_tao,
+        ngay_cap_nhat
+      FROM nguoi_dung
+      WHERE vai_tro = ?
+        AND trang_thai = ?
+      ORDER BY ho_ten ASC, id ASC
+    `,
+    [vaiTro, trangThai]
+  );
+
+  return rows;
+}
+
 module.exports = {
   timTheoEmail,
   timTheoId,
+  timTheoIdDeCapNhat,
   timTheoIdCoMatKhau,
   layDanhSachNguoiDung,
   demTongNguoiDung,
@@ -300,5 +354,6 @@ module.exports = {
   capNhatNguoiDung,
   capNhatTrangThai,
   capNhatMatKhau,
-  demQuanTriVienHoatDong
+  demQuanTriVienHoatDong,
+  layDanhSachTheoVaiTroVaTrangThai
 };

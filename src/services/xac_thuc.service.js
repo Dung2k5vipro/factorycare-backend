@@ -87,13 +87,13 @@ async function khoiTaoQuanTriVienDauTien(duLieu) {
     daKhoa = await nguoiDungModel.khoaKhoiTaoAdminDauTien(connection, tenKhoa);
 
     if (!daKhoa) {
-      throw taoLoi("He thong dang khoi tao admin, vui long thu lai", 409);
+      throw taoLoi("Hệ thống đang khởi tạo quản trị viên, vui lòng thử lại", 409);
     }
 
     const tongNguoiDung = await nguoiDungModel.demTongTatCaNguoiDung(connection);
 
     if (tongNguoiDung > 0) {
-      throw taoLoi("He thong da co tai khoan, vui long dang nhap bang admin hien co", 409);
+      throw taoLoi("Hệ thống đã có tài khoản, vui lòng đăng nhập bằng quản trị viên hiện có", 409);
     }
 
     const nguoiDung = await nguoiDungService.taoNguoiDung({

@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 function layJwtSecret() {
   if (!process.env.JWT_SECRET) {
-    const loi = new Error("Cau hinh xac thuc chua hop le");
+    const loi = new Error("Cấu hình xác thực chưa hợp lệ");
     loi.statusCode = 500;
 
     throw loi;

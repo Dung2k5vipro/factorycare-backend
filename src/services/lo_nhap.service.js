@@ -32,7 +32,7 @@ function layIdHopLe(id, tenDoiTuong) {
   const idDaChuyen = Number(id);
 
   if (!Number.isInteger(idDaChuyen) || idDaChuyen <= 0) {
-    throw taoLoi(`${tenDoiTuong} khong hop le`, 400);
+    throw taoLoi(`${tenDoiTuong} không hợp lệ`, 400);
   }
 
   return idDaChuyen;
@@ -58,7 +58,7 @@ function laySoTienTuyChon(giaTri, tenTruong) {
   const soTien = Number(giaTri);
 
   if (!Number.isFinite(soTien) || soTien < 0) {
-    throw taoLoi(`${tenTruong} khong hop le`, 400);
+    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
   }
 
   return soTien;
@@ -77,14 +77,14 @@ function layNgayBatBuoc(giaTri, tenTruong) {
   const ngay = chuanHoaChuoi(giaTri);
 
   if (!ngay) {
-    throw taoLoi(`${tenTruong} khong duoc de trong`, 400);
+    throw taoLoi(`${tenTruong} không được để trống`, 400);
   }
 
   const laDinhDangNgayHopLe = /^\d{4}-\d{2}-\d{2}$/.test(ngay);
   const thoiGian = Date.parse(`${ngay}T00:00:00Z`);
 
   if (!laDinhDangNgayHopLe || Number.isNaN(thoiGian)) {
-    throw taoLoi(`${tenTruong} phai co dinh dang YYYY-MM-DD`, 400);
+    throw taoLoi(`${tenTruong} phải có định dạng YYYY-MM-DD`, 400);
   }
 
   return ngay;
@@ -95,7 +95,7 @@ function layThongTinPhanTrang(query = {}) {
   const soBanGhiMoiTrang = Number(query.limit !== undefined ? query.limit : query.gioiHan || 10);
 
   if (!Number.isInteger(trangHienTai) || trangHienTai < 1) {
-    throw taoLoi("Trang khong hop le", 400);
+    throw taoLoi("Trang không hợp lệ", 400);
   }
 
   if (
@@ -103,7 +103,7 @@ function layThongTinPhanTrang(query = {}) {
     soBanGhiMoiTrang < 1 ||
     soBanGhiMoiTrang > 100
   ) {
-    throw taoLoi("Gioi han khong hop le", 400);
+    throw taoLoi("Giới hạn không hợp lệ", 400);
   }
 
   return {
@@ -179,7 +179,7 @@ async function kiemTraNhaCungCapTonTai(nhaCungCapId) {
   const nhaCungCap = await nhaCungCapModel.timTheoId(nhaCungCapId);
 
   if (!nhaCungCap) {
-    throw taoLoi("Nha cung cap khong ton tai", 400);
+    throw taoLoi("Nhà cung cấp không tồn tại", 400);
   }
 
   return nhaCungCap;
@@ -189,7 +189,7 @@ async function kiemTraMaLoChuaTonTai(maLo, boQuaId = null) {
   const loNhap = await loNhapModel.timTheoMaLo(maLo);
 
   if (loNhap && (!boQuaId || Number(loNhap.id) !== Number(boQuaId))) {
-    throw taoLoi("Ma lo da ton tai", 409);
+    throw taoLoi("Mã lô đã tồn tại", 409);
   }
 }
 
@@ -208,7 +208,7 @@ function layDuLieuLoNhapHopLe(duLieu = {}, loNhapHienTai = null, fileHoaDonUploa
     ? chuanHoaChuoi(duLieu[truongMaLo])
     : loNhapHienTai && loNhapHienTai.ma_lo;
   const nhaCungCapId = truongNhaCungCapId
-    ? layIdTuyChon(duLieu[truongNhaCungCapId], "Nha cung cap")
+    ? layIdTuyChon(duLieu[truongNhaCungCapId], "Nhà cung cấp")
     : loNhapHienTai && loNhapHienTai.nha_cung_cap_id;
   const soHoaDon = truongSoHoaDon
     ? chuanHoaChuoi(duLieu[truongSoHoaDon])
@@ -219,19 +219,19 @@ function layDuLieuLoNhapHopLe(duLieu = {}, loNhapHienTai = null, fileHoaDonUploa
       : loNhapHienTai && loNhapHienTai.file_hoa_don
   );
   const ngayNhap = truongNgayNhap
-    ? layNgayBatBuoc(duLieu[truongNgayNhap], "Ngay nhap")
+    ? layNgayBatBuoc(duLieu[truongNgayNhap], "Ngày nhập")
     : loNhapHienTai && loNhapHienTai.ngay_nhap
       ? loNhapHienTai.ngay_nhap
       : layNgayHomNay();
   const tongGiaTri = truongTongGiaTri
-    ? laySoTienTuyChon(duLieu[truongTongGiaTri], "Tong gia tri")
+    ? laySoTienTuyChon(duLieu[truongTongGiaTri], "Tổng giá trị")
     : loNhapHienTai && loNhapHienTai.tong_gia_tri;
   const ghiChu = truongGhiChu
     ? chuanHoaChuoi(duLieu[truongGhiChu])
     : loNhapHienTai && loNhapHienTai.ghi_chu;
 
   if (!maLo) {
-    throw taoLoi("Ma lo khong duoc de trong", 400);
+    throw taoLoi("Mã lô không được để trống", 400);
   }
 
   return {
@@ -247,7 +247,7 @@ function layDuLieuLoNhapHopLe(duLieu = {}, loNhapHienTai = null, fileHoaDonUploa
 
 function xuLyLoiTrungLoNhap(loi) {
   if (loi.code === "ER_DUP_ENTRY") {
-    throw taoLoi("Ma lo da ton tai", 409);
+    throw taoLoi("Mã lô đã tồn tại", 409);
   }
 
   throw loi;
@@ -258,7 +258,7 @@ async function layDanhSachLoNhap(query = {}) {
   const tuKhoa = typeof query.tuKhoa === "string" ? query.tuKhoa.trim() : "";
   const nhaCungCapId = layIdTuyChon(
     query.nhaCungCapId || query.nha_cung_cap_id,
-    "Nha cung cap"
+    "Nhà cung cấp"
   );
   const dieuKienLoc = {
     tuKhoa,
@@ -286,11 +286,11 @@ async function layDanhSachLoNhap(query = {}) {
 }
 
 async function layChiTietLoNhap(id) {
-  const loNhapId = layIdHopLe(id, "Id lo nhap");
+  const loNhapId = layIdHopLe(id, "Id lô nhập");
   const loNhap = await loNhapModel.timTheoId(loNhapId);
 
   if (!loNhap) {
-    throw taoLoi("Khong tim thay lo nhap", 404);
+    throw taoLoi("Không tìm thấy lô nhập", 404);
   }
 
   const soThietBi = await loNhapModel.demThietBiTheoLoNhap(loNhapId);
@@ -318,11 +318,11 @@ async function taoLoNhap(duLieu = {}, fileHoaDonUpload = null) {
 }
 
 async function capNhatLoNhap(id, duLieu = {}, fileHoaDonUpload = null) {
-  const loNhapId = layIdHopLe(id, "Id lo nhap");
+  const loNhapId = layIdHopLe(id, "Id lô nhập");
   const loNhapHienTai = await loNhapModel.timTheoId(loNhapId);
 
   if (!loNhapHienTai) {
-    throw taoLoi("Khong tim thay lo nhap", 404);
+    throw taoLoi("Không tìm thấy lô nhập", 404);
   }
 
   const duLieuHopLe = layDuLieuLoNhapHopLe(duLieu, loNhapHienTai, fileHoaDonUpload);
@@ -342,17 +342,17 @@ async function capNhatLoNhap(id, duLieu = {}, fileHoaDonUpload = null) {
 }
 
 async function xoaLoNhap(id) {
-  const loNhapId = layIdHopLe(id, "Id lo nhap");
+  const loNhapId = layIdHopLe(id, "Id lô nhập");
   const loNhap = await loNhapModel.timTheoId(loNhapId);
 
   if (!loNhap) {
-    throw taoLoi("Khong tim thay lo nhap", 404);
+    throw taoLoi("Không tìm thấy lô nhập", 404);
   }
 
   const soThietBi = await loNhapModel.demThietBiTheoLoNhap(loNhapId);
 
   if (soThietBi > 0) {
-    throw taoLoi("Khong the xoa lo nhap da co thiet bi", 409, {
+    throw taoLoi("Không thể xóa lô nhập đã có thiết bị", 409, {
       soThietBi
     });
   }
@@ -366,12 +366,12 @@ async function xoaLoNhap(id) {
 }
 
 async function layThietBiTheoLoNhap(id, query = {}) {
-  const loNhapId = layIdHopLe(id, "Id lo nhap");
+  const loNhapId = layIdHopLe(id, "Id lô nhập");
   const { trangHienTai, soBanGhiMoiTrang, boQua } = layThongTinPhanTrang(query);
   const loNhap = await loNhapModel.timTheoId(loNhapId);
 
   if (!loNhap) {
-    throw taoLoi("Khong tim thay lo nhap", 404);
+    throw taoLoi("Không tìm thấy lô nhập", 404);
   }
 
   const [danhSachThietBi, tongBanGhi] = await Promise.all([

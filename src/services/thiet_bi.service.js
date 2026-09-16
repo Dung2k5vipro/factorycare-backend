@@ -121,7 +121,7 @@ function layIdHopLe(id, tenDoiTuong) {
   const idDaChuyen = Number(id);
 
   if (!Number.isInteger(idDaChuyen) || idDaChuyen <= 0) {
-    throw taoLoi(`${tenDoiTuong} khong hop le`, 400);
+    throw taoLoi(`${tenDoiTuong} không hợp lệ`, 400);
   }
 
   return idDaChuyen;
@@ -143,7 +143,7 @@ function laySoTienTuyChon(giaTri, tenTruong) {
   const soTien = Number(giaTri);
 
   if (!Number.isFinite(soTien) || soTien < 0) {
-    throw taoLoi(`${tenTruong} khong hop le`, 400);
+    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
   }
 
   return soTien;
@@ -159,7 +159,7 @@ function layNgayTuyChon(giaTri, tenTruong) {
   const thoiGian = Date.parse(`${ngay}T00:00:00Z`);
 
   if (!laDinhDangNgayHopLe || Number.isNaN(thoiGian)) {
-    throw taoLoi(`${tenTruong} phai co dinh dang YYYY-MM-DD`, 400);
+    throw taoLoi(`${tenTruong} phải có định dạng YYYY-MM-DD`, 400);
   }
 
   return ngay;
@@ -193,7 +193,7 @@ function kiemTraKhoangNgayBaoHanh(ngayBatDauBaoHanh, ngayHetBaoHanh) {
   const thoiGianKetThuc = Date.parse(`${ngayKetThuc}T00:00:00Z`);
 
   if (thoiGianKetThuc < thoiGianBatDau) {
-    throw taoLoi("Ngay het bao hanh phai lon hon hoac bang ngay bat dau bao hanh", 400);
+    throw taoLoi("Ngày hết bảo hành phải lớn hơn hoặc bằng ngày bắt đầu bảo hành", 400);
   }
 }
 
@@ -201,13 +201,13 @@ function kiemTraChuoiBatBuoc(giaTri, tenTruong) {
   const giaTriChuanHoa = chuanHoaChuoi(giaTri);
 
   if (!giaTriChuanHoa) {
-    throw taoLoi(`${tenTruong} khong duoc de trong`, 400);
+    throw taoLoi(`${tenTruong} không được để trống`, 400);
   }
 
   return giaTriChuanHoa;
 }
 
-function kiemTraTrangThaiHopLe(trangThai, tenTruong = "Trang thai thiet bi") {
+function kiemTraTrangThaiHopLe(trangThai, tenTruong = "Trạng thái thiết bị") {
   const trangThaiChuanHoa = chuanHoaChuoi(trangThai);
 
   if (!trangThaiChuanHoa) {
@@ -218,7 +218,7 @@ function kiemTraTrangThaiHopLe(trangThai, tenTruong = "Trang thai thiet bi") {
   const danhSachTrangThaiHopLe = Object.values(TRANG_THAI_THIET_BI);
 
   if (!danhSachTrangThaiHopLe.includes(trangThaiVietHoa)) {
-    throw taoLoi(`${tenTruong} khong hop le`, 400);
+    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
   }
 
   return trangThaiVietHoa;
@@ -229,7 +229,7 @@ function layThongTinPhanTrang(query = {}) {
   const soBanGhiMoiTrang = Number(query.limit !== undefined ? query.limit : query.gioiHan || 10);
 
   if (!Number.isInteger(trangHienTai) || trangHienTai < 1) {
-    throw taoLoi("Trang khong hop le", 400);
+    throw taoLoi("Trang không hợp lệ", 400);
   }
 
   if (
@@ -237,7 +237,7 @@ function layThongTinPhanTrang(query = {}) {
     soBanGhiMoiTrang < 1 ||
     soBanGhiMoiTrang > 100
   ) {
-    throw taoLoi("Gioi han khong hop le", 400);
+    throw taoLoi("Giới hạn không hợp lệ", 400);
   }
 
   return {
@@ -398,7 +398,7 @@ async function khoaTienToSinhMa(connection, tienTo) {
   const daKhoa = await thietBiModel.khoaSinhMaThietBi(connection, tenKhoa);
 
   if (!daKhoa) {
-    throw taoLoi("Khong the khoa sinh ma thiet bi, vui long thu lai", 409);
+    throw taoLoi("Không thể khóa sinh mã thiết bị, vui lòng thử lại", 409);
   }
 
   return tenKhoa;
@@ -422,25 +422,25 @@ function xuLyLoiTrungThietBi(loi) {
   const thongBaoLoi = String(loi.message || "");
 
   if (thongBaoLoi.includes("uk_thiet_bi_serial") || thongBaoLoi.includes("so_serial")) {
-    throw taoLoi("Serial thiet bi da ton tai", 409);
+    throw taoLoi("Serial thiết bị đã tồn tại", 409);
   }
 
   if (thongBaoLoi.includes("uk_thiet_bi_qr") || thongBaoLoi.includes("ma_qr")) {
-    throw taoLoi("Ma QR thiet bi da ton tai", 409);
+    throw taoLoi("Mã QR thiết bị đã tồn tại", 409);
   }
 
   if (thongBaoLoi.includes("ma_thiet_bi")) {
-    throw taoLoi("Ma thiet bi da ton tai", 409);
+    throw taoLoi("Mã thiết bị đã tồn tại", 409);
   }
 
-  throw taoLoi("Du lieu thiet bi da ton tai", 409);
+  throw taoLoi("Dữ liệu thiết bị đã tồn tại", 409);
 }
 
 async function kiemTraLoaiThietBiTonTai(loaiThietBiId, connection = null) {
   const loaiThietBi = await loaiThietBiModel.timTheoId(loaiThietBiId, connection);
 
   if (!loaiThietBi) {
-    throw taoLoi("Loai thiet bi khong ton tai", 400);
+    throw taoLoi("Loại thiết bị không tồn tại", 400);
   }
 
   return loaiThietBi;
@@ -454,7 +454,7 @@ async function kiemTraViTriTonTai(viTriId, connection = null) {
   const viTri = await viTriModel.timTheoId(viTriId, connection);
 
   if (!viTri) {
-    throw taoLoi("Vi tri khong ton tai", 400);
+    throw taoLoi("Vị trí không tồn tại", 400);
   }
 
   return viTri;
@@ -468,7 +468,7 @@ async function kiemTraLoNhapTonTai(loNhapId, connection = null) {
   const loNhap = await loNhapModel.timTheoId(loNhapId, connection);
 
   if (!loNhap) {
-    throw taoLoi("Lo nhap khong ton tai", 400);
+    throw taoLoi("Lô nhập không tồn tại", 400);
   }
 
   return loNhap;
@@ -482,22 +482,22 @@ async function kiemTraSerialChuaTonTai(soSerial, thietBiIdBoQua = null) {
   const thietBiTheoSerial = await thietBiModel.timTheoSerial(soSerial, thietBiIdBoQua);
 
   if (thietBiTheoSerial) {
-    throw taoLoi("Serial thiet bi da ton tai", 409);
+    throw taoLoi("Serial thiết bị đã tồn tại", 409);
   }
 }
 
 async function layDuLieuTaoThietBiHopLe(duLieu) {
-  const tenThietBi = kiemTraChuoiBatBuoc(duLieu.tenThietBi, "Ten thiet bi");
-  const loaiThietBiId = layIdHopLe(duLieu.loaiThietBiId, "Loai thiet bi");
-  const viTriId = layIdTuyChon(duLieu.viTriId, "Vi tri");
-  const loNhapId = layIdTuyChon(duLieu.loNhapId, "Lo nhap");
+  const tenThietBi = kiemTraChuoiBatBuoc(duLieu.tenThietBi, "Tên thiết bị");
+  const loaiThietBiId = layIdHopLe(duLieu.loaiThietBiId, "Loại thiết bị");
+  const viTriId = layIdTuyChon(duLieu.viTriId, "Vị trí");
+  const loNhapId = layIdTuyChon(duLieu.loNhapId, "Lô nhập");
   const soSerial = chuanHoaChuoi(duLieu.soSerial);
   const model = chuanHoaChuoi(duLieu.model);
   const hangSanXuat = chuanHoaChuoi(duLieu.hangSanXuat);
   const anhThietBi = chuanHoaChuoi(duLieu.anhThietBi);
-  const giaMua = laySoTienTuyChon(duLieu.giaMua, "Gia mua");
-  const ngayBatDauBaoHanh = layNgayTuyChon(duLieu.ngayBatDauBaoHanh, "Ngay bat dau bao hanh");
-  const ngayHetBaoHanh = layNgayTuyChon(duLieu.ngayHetBaoHanh, "Ngay het bao hanh");
+  const giaMua = laySoTienTuyChon(duLieu.giaMua, "Giá mua");
+  const ngayBatDauBaoHanh = layNgayTuyChon(duLieu.ngayBatDauBaoHanh, "Ngày bắt đầu bảo hành");
+  const ngayHetBaoHanh = layNgayTuyChon(duLieu.ngayHetBaoHanh, "Ngày hết bảo hành");
   const trangThai = kiemTraTrangThaiHopLe(duLieu.trangThai);
   const moTa = chuanHoaChuoi(duLieu.moTa);
 
@@ -591,31 +591,31 @@ function kiemTraKhongSuaTruongHeThong(duLieu) {
   );
 
   if (truongDangSua) {
-    throw taoLoi(`Khong duoc sua truc tiep truong ${truongDangSua}`, 400);
+    throw taoLoi(`Không được sửa trực tiếp trường ${truongDangSua}`, 400);
   }
 }
 
 async function capNhatThietBi(id, duLieu) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const thietBiHienTai = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBiHienTai) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   kiemTraKhongSuaTruongHeThong(duLieu);
 
   const tenThietBi = kiemTraChuoiBatBuoc(
     duLieu.tenThietBi !== undefined ? duLieu.tenThietBi : thietBiHienTai.ten_thiet_bi,
-    "Ten thiet bi"
+    "Tên thiết bị"
   );
   const loaiThietBiId =
     duLieu.loaiThietBiId !== undefined
-      ? layIdHopLe(duLieu.loaiThietBiId, "Loai thiet bi")
+      ? layIdHopLe(duLieu.loaiThietBiId, "Loại thiết bị")
       : thietBiHienTai.loai_thiet_bi_id;
   const loNhapId =
     duLieu.loNhapId !== undefined
-      ? layIdTuyChon(duLieu.loNhapId, "Lo nhap")
+      ? layIdTuyChon(duLieu.loNhapId, "Lô nhập")
       : thietBiHienTai.lo_nhap_id;
   const soSerial =
     duLieu.soSerial !== undefined ? chuanHoaChuoi(duLieu.soSerial) : thietBiHienTai.so_serial;
@@ -630,15 +630,15 @@ async function capNhatThietBi(id, duLieu) {
       : thietBiHienTai.anh_thiet_bi;
   const giaMua =
     duLieu.giaMua !== undefined
-      ? laySoTienTuyChon(duLieu.giaMua, "Gia mua")
+      ? laySoTienTuyChon(duLieu.giaMua, "Giá mua")
       : thietBiHienTai.gia_mua;
   const ngayBatDauBaoHanh =
     duLieu.ngayBatDauBaoHanh !== undefined
-      ? layNgayTuyChon(duLieu.ngayBatDauBaoHanh, "Ngay bat dau bao hanh")
+      ? layNgayTuyChon(duLieu.ngayBatDauBaoHanh, "Ngày bắt đầu bảo hành")
       : thietBiHienTai.ngay_bat_dau_bao_hanh;
   const ngayHetBaoHanh =
     duLieu.ngayHetBaoHanh !== undefined
-      ? layNgayTuyChon(duLieu.ngayHetBaoHanh, "Ngay het bao hanh")
+      ? layNgayTuyChon(duLieu.ngayHetBaoHanh, "Ngày hết bảo hành")
       : thietBiHienTai.ngay_het_bao_hanh;
   const moTa = duLieu.moTa !== undefined ? chuanHoaChuoi(duLieu.moTa) : thietBiHienTai.mo_ta;
 
@@ -678,9 +678,9 @@ async function layDanhSachThietBi(query = {}, nguoiDung = {}) {
   const tuKhoa = typeof query.tuKhoa === "string" ? query.tuKhoa.trim() : "";
   const loaiThietBiId = layIdTuyChon(
     query.loaiThietBiId || query.loai_thiet_bi_id || query.loai_thiet_bi,
-    "Loai thiet bi"
+    "Loại thiết bị"
   );
-  const viTriId = layIdTuyChon(query.viTriId || query.vi_tri_id || query.vi_tri, "Vi tri");
+  const viTriId = layIdTuyChon(query.viTriId || query.vi_tri_id || query.vi_tri, "Vị trí");
   const trangThai = query.trangThai || query.trang_thai
     ? kiemTraTrangThaiHopLe(query.trangThai || query.trang_thai)
     : null;
@@ -713,11 +713,11 @@ async function layDanhSachThietBi(query = {}, nguoiDung = {}) {
 }
 
 async function layChiTietThietBi(id, nguoiDung = {}) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   return dinhDangThietBi(thietBi, nguoiDung.vaiTro);
@@ -740,11 +740,11 @@ async function damBaoCoMaQr(thietBi) {
 }
 
 async function layQrThietBi(id) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   const maQr = await damBaoCoMaQr(thietBi);
@@ -763,11 +763,11 @@ function chuanHoaMaQrTuNoiDung(noiDungQr) {
   const giaTri = chuanHoaChuoi(noiDungQr);
 
   if (!giaTri) {
-    throw taoLoi("QR khong hop le", 400);
+    throw taoLoi("Mã QR không hợp lệ", 400);
   }
 
   if (giaTri.length > 255) {
-    throw taoLoi("QR khong hop le", 400);
+    throw taoLoi("Mã QR không hợp lệ", 400);
   }
 
   try {
@@ -789,13 +789,13 @@ async function layThietBiTheoQr(noiDungQr, nguoiDung = {}) {
   const maQr = chuanHoaMaQrTuNoiDung(noiDungQr);
 
   if (!maQr.startsWith("FC-")) {
-    throw taoLoi("QR khong thuoc he thong FactoryCare", 400);
+    throw taoLoi("Mã QR không thuộc hệ thống FactoryCare", 400);
   }
 
   const thietBi = await thietBiModel.timTheoMaQr(maQr);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi tu QR", 404);
+    throw taoLoi("Không tìm thấy thiết bị từ mã QR", 404);
   }
 
   const duLieu = dinhDangThietBi(thietBi, nguoiDung.vaiTro);
@@ -803,18 +803,18 @@ async function layThietBiTheoQr(noiDungQr, nguoiDung = {}) {
   return {
     ...duLieu,
     canhBao: thietBi.trang_thai === TRANG_THAI_THIET_BI.THANH_LY
-      ? "Thiet bi da thanh ly"
+      ? "Thiết bị đã thanh lý"
       : null
   };
 }
 
 async function capNhatTrangThai(id, trangThaiMoi) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const trangThai = kiemTraTrangThaiHopLe(trangThaiMoi);
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   if (thietBi.trang_thai === trangThai) {
@@ -824,7 +824,7 @@ async function capNhatTrangThai(id, trangThaiMoi) {
   const danhSachTrangThaiDuocChuyen = CHUYEN_TRANG_THAI_HOP_LE[thietBi.trang_thai] || [];
 
   if (!danhSachTrangThaiDuocChuyen.includes(trangThai)) {
-    throw taoLoi("Khong the chuyen trang thai thiet bi theo luong hien tai", 409);
+    throw taoLoi("Không thể chuyển trạng thái thiết bị theo luồng hiện tại", 409);
   }
 
   await thietBiModel.capNhatTrangThai(thietBiId, trangThai);
@@ -873,13 +873,13 @@ function dinhDangDieuChuyen(dieuChuyen) {
 }
 
 async function dieuChuyenThietBi(id, duLieu, nguoiDung = {}) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const viTriMoiId = layIdHopLe(
     duLieu.viTriMoiId || duLieu.vi_tri_moi_id || duLieu.viTriId,
-    "Vi tri moi"
+    "Vị trí mới"
   );
-  const nguoiThucHienId = layIdHopLe(nguoiDung.id, "Nguoi thuc hien");
-  const lyDo = kiemTraChuoiBatBuoc(duLieu.lyDo || duLieu.ly_do, "Ly do dieu chuyen");
+  const nguoiThucHienId = layIdHopLe(nguoiDung.id, "Người thực hiện");
+  const lyDo = kiemTraChuoiBatBuoc(duLieu.lyDo || duLieu.ly_do, "Lý do điều chuyển");
   const ghiChu = chuanHoaChuoi(duLieu.ghiChu || duLieu.ghi_chu);
   const connection = await pool.getConnection();
   let daBatDauTransaction = false;
@@ -892,19 +892,19 @@ async function dieuChuyenThietBi(id, duLieu, nguoiDung = {}) {
     const thietBi = await thietBiModel.timTheoIdDeCapNhat(thietBiId, connection);
 
     if (!thietBi) {
-      throw taoLoi("Khong tim thay thiet bi", 404);
+      throw taoLoi("Không tìm thấy thiết bị", 404);
     }
 
     const viTriMoi = await viTriModel.timTheoId(viTriMoiId, connection);
 
     if (!viTriMoi) {
-      throw taoLoi("Vi tri moi khong ton tai", 400);
+      throw taoLoi("Vị trí mới không tồn tại", 400);
     }
 
     const viTriCuId = thietBi.vi_tri_id || null;
 
     if (viTriCuId && Number(viTriCuId) === viTriMoiId) {
-      throw taoLoi("Thiet bi dang o vi tri nay, khong can dieu chuyen", 409);
+      throw taoLoi("Thiết bị đang ở vị trí này, không cần điều chuyển", 409);
     }
 
     dieuChuyenId = await dieuChuyenThietBiModel.taoDieuChuyenThietBi(connection, {
@@ -942,12 +942,12 @@ async function dieuChuyenThietBi(id, duLieu, nguoiDung = {}) {
 }
 
 async function layLichSuDieuChuyen(id, query = {}) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const { trangHienTai, soBanGhiMoiTrang, boQua } = layThongTinPhanTrang(query);
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   const [danhSachDieuChuyen, tongBanGhi] = await Promise.all([
@@ -976,11 +976,11 @@ async function layLichSuDieuChuyen(id, query = {}) {
 }
 
 async function capNhatBaoHanh(id, duLieu = {}) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const thietBiHienTai = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBiHienTai) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   const truongNgayBatDau = layGiaTriTheoNhieuTen(duLieu, [
@@ -992,10 +992,10 @@ async function capNhatBaoHanh(id, duLieu = {}) {
     "ngay_het_bao_hanh"
   ]);
   const ngayBatDauBaoHanh = truongNgayBatDau
-    ? layNgayTuyChon(duLieu[truongNgayBatDau], "Ngay bat dau bao hanh")
+    ? layNgayTuyChon(duLieu[truongNgayBatDau], "Ngày bắt đầu bảo hành")
     : thietBiHienTai.ngay_bat_dau_bao_hanh;
   const ngayHetBaoHanh = truongNgayKetThuc
-    ? layNgayTuyChon(duLieu[truongNgayKetThuc], "Ngay het bao hanh")
+    ? layNgayTuyChon(duLieu[truongNgayKetThuc], "Ngày hết bảo hành")
     : thietBiHienTai.ngay_het_bao_hanh;
 
   kiemTraKhoangNgayBaoHanh(ngayBatDauBaoHanh, ngayHetBaoHanh);
@@ -1011,11 +1011,11 @@ async function capNhatBaoHanh(id, duLieu = {}) {
 }
 
 async function layBaoHanh(id) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   return {
@@ -1061,19 +1061,19 @@ function taoCanhBaoHealthScore(thietBi, thongKeSuCo, thongKeSuaChua, thongKeBaoT
   const danhSachCanhBao = [];
 
   if (thietBi.trang_thai === TRANG_THAI_THIET_BI.DANG_HONG) {
-    danhSachCanhBao.push("Thiet bi dang o trang thai hong");
+    danhSachCanhBao.push("Thiết bị đang ở trạng thái hỏng");
   }
 
   if (laySoThongKe(thongKeSuCo, "so_su_co_dang_mo") > 0) {
-    danhSachCanhBao.push("Thiet bi dang co su co chua xu ly xong");
+    danhSachCanhBao.push("Thiết bị đang có sự cố chưa xử lý xong");
   }
 
   if (laySoThongKe(thongKeBaoTri, "so_qua_han") > 0) {
-    danhSachCanhBao.push("Thiet bi co phieu bao tri qua han");
+    danhSachCanhBao.push("Thiết bị có phiếu bảo trì quá hạn");
   }
 
   if (laySoThongKe(thongKeSuaChua, "so_khong_sua_duoc") > 0) {
-    danhSachCanhBao.push("Thiet bi tung co ho so sua chua khong sua duoc");
+    danhSachCanhBao.push("Thiết bị từng có hồ sơ sửa chữa không sửa được");
   }
 
   return danhSachCanhBao;
@@ -1105,11 +1105,11 @@ function dinhDangThongKeHealthScore(thongKeSuCo, thongKeSuaChua, thongKeBaoTri) 
 }
 
 async function layHealthScore(id) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   const [thongKeSuCo, thongKeSuaChua, thongKeBaoTri] = await Promise.all([
@@ -1129,7 +1129,7 @@ async function layHealthScore(id) {
       diem: null,
       mucDanhGia: null,
       lyDo: [
-        "Chua co su co, ho so sua chua hoac phieu bao tri nao de danh gia suc khoe thiet bi"
+        "Chưa có sự cố, hồ sơ sửa chữa hoặc phiếu bảo trì nào để đánh giá sức khỏe thiết bị"
       ],
       thongKe: dinhDangThongKeHealthScore(thongKeSuCo, thongKeSuaChua, thongKeBaoTri)
     };
@@ -1212,12 +1212,12 @@ function taoSuKienTimeline({ loaiSuKien, thoiGian, tieuDe, moTa = null, duLieu =
 }
 
 function locTimelineTheoQuery(danhSachSuKien, query = {}) {
-  const tuNgay = layNgayLocTimeline(query.tuNgay || query.tu_ngay, "Tu ngay");
-  const denNgay = layNgayLocTimeline(query.denNgay || query.den_ngay, "Den ngay", true);
+  const tuNgay = layNgayLocTimeline(query.tuNgay || query.tu_ngay, "Từ ngày");
+  const denNgay = layNgayLocTimeline(query.denNgay || query.den_ngay, "Đến ngày", true);
   const danhSachLoaiSuKien = layDanhSachLoaiSuKienLoc(query.loaiSuKien || query.loai_su_kien);
 
   if (tuNgay && denNgay && denNgay < tuNgay) {
-    throw taoLoi("Den ngay phai lon hon hoac bang tu ngay", 400);
+    throw taoLoi("Đến ngày phải lớn hơn hoặc bằng từ ngày", 400);
   }
 
   return danhSachSuKien.filter((suKien) => {
@@ -1242,7 +1242,7 @@ function taoTimelineTuDuLieu({ thietBi, loNhap, danhSachDieuChuyen, danhSachSuCo
     taoSuKienTimeline({
       loaiSuKien: "TAO_THIET_BI",
       thoiGian: thietBi.ngay_tao,
-      tieuDe: "Tao ho so thiet bi",
+      tieuDe: "Tạo hồ sơ thiết bị",
       duLieu: {
         id: thietBi.id,
         maThietBi: thietBi.ma_thiet_bi,
@@ -1256,7 +1256,7 @@ function taoTimelineTuDuLieu({ thietBi, loNhap, danhSachDieuChuyen, danhSachSuCo
       taoSuKienTimeline({
         loaiSuKien: "NHAP_LO",
         thoiGian: loNhap.ngay_nhap || thietBi.ngay_tao,
-        tieuDe: "Gan thiet bi vao lo nhap",
+        tieuDe: "Gán thiết bị vào lô nhập",
         moTa: loNhap.ma_lo,
         duLieu: {
           loNhapId: loNhap.id,
@@ -1278,7 +1278,7 @@ function taoTimelineTuDuLieu({ thietBi, loNhap, danhSachDieuChuyen, danhSachSuCo
       taoSuKienTimeline({
         loaiSuKien: "DIEU_CHUYEN",
         thoiGian: dieuChuyen.ngay_dieu_chuyen || dieuChuyen.ngay_tao,
-        tieuDe: "Dieu chuyen thiet bi",
+        tieuDe: "Điều chuyển thiết bị",
         moTa: dieuChuyen.ly_do,
         duLieu: dinhDangDieuChuyen(dieuChuyen)
       })
@@ -1308,7 +1308,7 @@ function taoTimelineTuDuLieu({ thietBi, loNhap, danhSachDieuChuyen, danhSachSuCo
       taoSuKienTimeline({
         loaiSuKien: "SUA_CHUA",
         thoiGian: suaChua.thoi_gian_hoan_thanh || suaChua.thoi_gian_bat_dau || suaChua.ngay_tao,
-        tieuDe: "Cap nhat ho so sua chua",
+        tieuDe: "Cập nhật hồ sơ sửa chữa",
         moTa: suaChua.ma_su_co,
         duLieu: {
           id: suaChua.id,
@@ -1335,7 +1335,7 @@ function taoTimelineTuDuLieu({ thietBi, loNhap, danhSachDieuChuyen, danhSachSuCo
           baoTri.thoi_gian_bat_dau ||
           baoTri.ngay_du_kien ||
           baoTri.ngay_tao,
-        tieuDe: "Phieu bao tri",
+        tieuDe: "Phiếu bảo trì",
         moTa: baoTri.ket_qua_bao_tri,
         duLieu: {
           id: baoTri.id,
@@ -1357,12 +1357,12 @@ function taoTimelineTuDuLieu({ thietBi, loNhap, danhSachDieuChuyen, danhSachSuCo
 }
 
 async function layTimelineThietBi(id, query = {}) {
-  const thietBiId = layIdHopLe(id, "Id thiet bi");
+  const thietBiId = layIdHopLe(id, "Id thiết bị");
   const { trangHienTai, soBanGhiMoiTrang, boQua } = layThongTinPhanTrang(query);
   const thietBi = await thietBiModel.timTheoId(thietBiId);
 
   if (!thietBi) {
-    throw taoLoi("Khong tim thay thiet bi", 404);
+    throw taoLoi("Không tìm thấy thiết bị", 404);
   }
 
   const [
@@ -1465,13 +1465,13 @@ function layGiaTriOExcel(giaTri) {
 
 async function docDanhSachTuTepImport(tep) {
   if (!tep) {
-    throw taoLoi("Vui long tai len file import", 400);
+    throw taoLoi("Vui lòng tải lên file import", 400);
   }
 
   const duoiTep = path.extname(tep.originalname || "").toLowerCase();
 
   if (!DANH_SACH_DUOI_TEP_HOP_LE.includes(duoiTep)) {
-    throw taoLoi("File import chi ho tro Excel hoac CSV", 400);
+    throw taoLoi("File import chỉ hỗ trợ Excel hoặc CSV", 400);
   }
 
   const workbook = new ExcelJS.Workbook();
@@ -1483,13 +1483,13 @@ async function docDanhSachTuTepImport(tep) {
       await workbook.xlsx.load(tep.buffer);
     }
   } catch (loi) {
-    throw taoLoi("Khong doc duoc file import", 400);
+    throw taoLoi("Không đọc được file import", 400);
   }
 
   const sheet = workbook.worksheets[0];
 
   if (!sheet) {
-    throw taoLoi("File import khong co sheet du lieu", 400);
+    throw taoLoi("File import không có sheet dữ liệu", 400);
   }
 
   const dongTieuDe = sheet.getRow(1);
@@ -1502,7 +1502,7 @@ async function docDanhSachTuTepImport(tep) {
   const coTieuDe = danhSachTieuDe.some((tenCot) => chuanHoaChuoi(tenCot));
 
   if (!coTieuDe) {
-    throw taoLoi("File import thieu dong tieu de cot", 400);
+    throw taoLoi("File import thiếu dòng tiêu đề cột", 400);
   }
 
   const danhSachDongCoDuLieu = [];
@@ -1536,11 +1536,11 @@ async function docDanhSachTuTepImport(tep) {
   }
 
   if (danhSachDongCoDuLieu.length === 0) {
-    throw taoLoi("File import khong co du lieu", 400);
+    throw taoLoi("File import không có dữ liệu", 400);
   }
 
   if (danhSachDongCoDuLieu.length > SO_DONG_IMPORT_TOI_DA) {
-    throw taoLoi(`File import khong duoc vuot qua ${SO_DONG_IMPORT_TOI_DA} dong`, 400);
+    throw taoLoi(`File import không được vượt quá ${SO_DONG_IMPORT_TOI_DA} dòng`, 400);
   }
 
   return danhSachDongCoDuLieu;
@@ -1568,7 +1568,7 @@ function layDanhSachImportTuBody(body) {
     }));
   }
 
-  throw taoLoi("Vui long gui danh sach thiet bi can import", 400);
+  throw taoLoi("Vui lòng gửi danh sách thiết bị cần import", 400);
 }
 
 function themLoiImport(danhSachLoi, dong, cot, thongBao) {
@@ -1602,11 +1602,11 @@ async function layLoaiThietBiChoImport(duLieu, dong, danhSachLoi) {
 
   if (loaiThietBiId) {
     try {
-      const id = layIdHopLe(loaiThietBiId, "Loai thiet bi");
+      const id = layIdHopLe(loaiThietBiId, "Loại thiết bị");
       const loaiThietBi = await loaiThietBiModel.timTheoId(id);
 
       if (!loaiThietBi) {
-        themLoiImport(danhSachLoi, dong, "loaiThietBiId", "Loai thiet bi khong ton tai");
+        themLoiImport(danhSachLoi, dong, "loaiThietBiId", "Loại thiết bị không tồn tại");
         return null;
       }
 
@@ -1618,14 +1618,14 @@ async function layLoaiThietBiChoImport(duLieu, dong, danhSachLoi) {
   }
 
   if (!tenLoai) {
-    themLoiImport(danhSachLoi, dong, "loaiThietBiId", "Thieu loai thiet bi");
+    themLoiImport(danhSachLoi, dong, "loaiThietBiId", "Thiếu loại thiết bị");
     return null;
   }
 
   const loaiThietBi = await loaiThietBiModel.timTheoTen(tenLoai);
 
   if (!loaiThietBi) {
-    themLoiImport(danhSachLoi, dong, "tenLoai", "Loai thiet bi khong ton tai");
+    themLoiImport(danhSachLoi, dong, "tenLoai", "Loại thiết bị không tồn tại");
     return null;
   }
 
@@ -1638,11 +1638,11 @@ async function layViTriChoImport(duLieu, dong, danhSachLoi) {
 
   if (viTriId) {
     try {
-      const id = layIdHopLe(viTriId, "Vi tri");
+      const id = layIdHopLe(viTriId, "Vị trí");
       const viTri = await viTriModel.timTheoId(id);
 
       if (!viTri) {
-        themLoiImport(danhSachLoi, dong, "viTriId", "Vi tri khong ton tai");
+        themLoiImport(danhSachLoi, dong, "viTriId", "Vị trí không tồn tại");
         return null;
       }
 
@@ -1660,12 +1660,12 @@ async function layViTriChoImport(duLieu, dong, danhSachLoi) {
   const danhSachViTri = await viTriModel.timDanhSachTheoTen(tenViTri);
 
   if (danhSachViTri.length === 0) {
-    themLoiImport(danhSachLoi, dong, "tenViTri", "Vi tri khong ton tai");
+    themLoiImport(danhSachLoi, dong, "tenViTri", "Vị trí không tồn tại");
     return null;
   }
 
   if (danhSachViTri.length > 1) {
-    themLoiImport(danhSachLoi, dong, "tenViTri", "Ten vi tri bi trung, vui long dung viTriId");
+    themLoiImport(danhSachLoi, dong, "tenViTri", "Tên vị trí bị trùng, vui lòng dùng viTriId");
     return null;
   }
 
@@ -1678,11 +1678,11 @@ async function layLoNhapChoImport(duLieu, dong, danhSachLoi) {
 
   if (loNhapId) {
     try {
-      const id = layIdHopLe(loNhapId, "Lo nhap");
+      const id = layIdHopLe(loNhapId, "Lô nhập");
       const loNhap = await loNhapModel.timTheoId(id);
 
       if (!loNhap) {
-        themLoiImport(danhSachLoi, dong, "loNhapId", "Lo nhap khong ton tai");
+        themLoiImport(danhSachLoi, dong, "loNhapId", "Lô nhập không tồn tại");
         return null;
       }
 
@@ -1700,7 +1700,7 @@ async function layLoNhapChoImport(duLieu, dong, danhSachLoi) {
   const loNhap = await loNhapModel.timTheoMaLo(maLo);
 
   if (!loNhap) {
-    themLoiImport(danhSachLoi, dong, "maLo", "Lo nhap khong ton tai");
+    themLoiImport(danhSachLoi, dong, "maLo", "Lô nhập không tồn tại");
     return null;
   }
 
@@ -1726,20 +1726,20 @@ async function kiemTraDongImport({ dong, duLieu }, thongKeSerial) {
   const moTa = chuanHoaChuoi(duLieu.moTa);
 
   if (!tenThietBi) {
-    themLoiImport(danhSachLoi, dong, "tenThietBi", "Thieu ten thiet bi");
+    themLoiImport(danhSachLoi, dong, "tenThietBi", "Thiếu tên thiết bị");
   }
 
   if (soSerial) {
     const soLanTrungTrongFile = thongKeSerial.get(soSerial.toLowerCase()) || 0;
 
     if (soLanTrungTrongFile > 1) {
-      themLoiImport(danhSachLoi, dong, "soSerial", "Serial bi trung trong file");
+      themLoiImport(danhSachLoi, dong, "soSerial", "Serial bị trùng trong file");
     }
 
     const thietBiTheoSerial = await thietBiModel.timTheoSerial(soSerial);
 
     if (thietBiTheoSerial) {
-      themLoiImport(danhSachLoi, dong, "soSerial", "Serial bi trung database");
+      themLoiImport(danhSachLoi, dong, "soSerial", "Serial bị trùng trong cơ sở dữ liệu");
     }
   }
 
@@ -1753,13 +1753,13 @@ async function kiemTraDongImport({ dong, duLieu }, thongKeSerial) {
     kiemTraTrangThaiHopLe(duLieu.trangThai)
   );
   const giaMua = layGiaTriCoBaoLoi(danhSachLoi, dong, "giaMua", () =>
-    laySoTienTuyChon(duLieu.giaMua, "Gia mua")
+    laySoTienTuyChon(duLieu.giaMua, "Giá mua")
   );
   const ngayBatDauBaoHanh = layGiaTriCoBaoLoi(danhSachLoi, dong, "ngayBatDauBaoHanh", () =>
-    layNgayTuyChon(duLieu.ngayBatDauBaoHanh, "Ngay bat dau bao hanh")
+    layNgayTuyChon(duLieu.ngayBatDauBaoHanh, "Ngày bắt đầu bảo hành")
   );
   const ngayHetBaoHanh = layGiaTriCoBaoLoi(danhSachLoi, dong, "ngayHetBaoHanh", () =>
-    layNgayTuyChon(duLieu.ngayHetBaoHanh, "Ngay het bao hanh")
+    layNgayTuyChon(duLieu.ngayHetBaoHanh, "Ngày hết bảo hành")
   );
 
   if (danhSachLoi.length > 0 || !loaiThietBi) {
@@ -1792,11 +1792,11 @@ async function kiemTraDongImport({ dong, duLieu }, thongKeSerial) {
 
 async function taoKetQuaPreviewImport(danhSachDongImport) {
   if (!Array.isArray(danhSachDongImport) || danhSachDongImport.length === 0) {
-    throw taoLoi("Danh sach import khong co du lieu", 400);
+    throw taoLoi("Danh sách import không có dữ liệu", 400);
   }
 
   if (danhSachDongImport.length > SO_DONG_IMPORT_TOI_DA) {
-    throw taoLoi(`Danh sach import khong duoc vuot qua ${SO_DONG_IMPORT_TOI_DA} dong`, 400);
+    throw taoLoi(`Danh sách import không được vượt quá ${SO_DONG_IMPORT_TOI_DA} dòng`, 400);
   }
 
   const thongKeSerial = demSerialTrongFile(danhSachDongImport);
@@ -1838,7 +1838,7 @@ async function importThietBi({ tep = null, body = {} }) {
   const ketQuaPreview = await taoKetQuaPreviewImport(danhSachDongImport);
 
   if (ketQuaPreview.soDongLoi > 0) {
-    throw taoLoi("Du lieu import con loi, vui long kiem tra lai", 400, ketQuaPreview);
+    throw taoLoi("Dữ liệu import còn lỗi, vui lòng kiểm tra lại", 400, ketQuaPreview);
   }
 
   const connection = await pool.getConnection();
@@ -1853,7 +1853,7 @@ async function importThietBi({ tep = null, body = {} }) {
       const loaiThietBi = await loaiThietBiModel.timTheoId(dongHopLe.duLieu.loaiThietBiId, connection);
 
       if (!loaiThietBi) {
-        throw taoLoi("Loai thiet bi khong ton tai", 400);
+        throw taoLoi("Loại thiết bị không tồn tại", 400);
       }
 
       danhSachDuLieuCanImport.push({

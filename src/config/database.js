@@ -19,9 +19,9 @@ const checkDatabaseConnection = async () => {
   try {
     connection = await pool.getConnection();
     await connection.query("SELECT 1 AS connected");
-    console.log("Database connected successfully");
+    console.log("Kết nối cơ sở dữ liệu thành công");
   } catch (error) {
-    console.error("Database connection failed:", error.message);
+    console.error("Kết nối cơ sở dữ liệu thất bại:", error.message);
     throw error;
   } finally {
     if (connection) {

@@ -1,0 +1,7 @@
+const KET_QUA_SUA_CHUA = {
+  DA_SUA_XONG: "DA_SUA_XONG",
+  SUA_MOT_PHAN: "SUA_MOT_PHAN",
+  KHONG_SUA_DUOC: "KHONG_SUA_DUOC"
+};
+
+module.exports = KET_QUA_SUA_CHUA;

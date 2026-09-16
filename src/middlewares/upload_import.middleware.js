@@ -32,7 +32,7 @@ const upload = multer({
     const coMimeHopLe = DANH_SACH_MIME_HOP_LE.includes(file.mimetype);
 
     if (!coDuoiTepHopLe || !coMimeHopLe) {
-      return callback(taoLoi("File import chi ho tro Excel hoac CSV", 400));
+      return callback(taoLoi("File import chỉ hỗ trợ Excel hoặc CSV", 400));
     }
 
     return callback(null, true);
@@ -43,11 +43,11 @@ function uploadTepImport(req, res, next) {
   upload.single("tep")(req, res, (loi) => {
     if (loi) {
       if (loi.code === "LIMIT_FILE_SIZE") {
-        return next(taoLoi("File import khong duoc vuot qua 5MB", 400));
+        return next(taoLoi("File import không được vượt quá 5MB", 400));
       }
 
       if (loi.code === "LIMIT_FILE_COUNT") {
-        return next(taoLoi("Chi duoc upload mot file import", 400));
+        return next(taoLoi("Chỉ được tải lên một file import", 400));
       }
 
       return next(loi);

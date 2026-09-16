@@ -21,7 +21,7 @@ async function khoiTaoQuanTriVienDauTien(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Khoi tao quan tri vien dau tien thanh cong",
+      thongBao: "Khởi tạo quản trị viên đầu tiên thành công",
       duLieu: nguoiDung
     });
   } catch (loi) {

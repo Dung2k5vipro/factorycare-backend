@@ -45,7 +45,7 @@ const upload = multer({
     const coMimeHopLe = DANH_SACH_MIME_HOP_LE.includes(file.mimetype);
 
     if (!coDuoiTepHopLe || !coMimeHopLe) {
-      return callback(taoLoi("File hoa don chi ho tro PDF hoac hinh anh", 400));
+      return callback(taoLoi("File hóa đơn chỉ hỗ trợ PDF hoặc hình ảnh", 400));
     }
 
     return callback(null, true);
@@ -59,11 +59,11 @@ function uploadTepHoaDon(req, res, next) {
   ])(req, res, (loi) => {
     if (loi) {
       if (loi.code === "LIMIT_FILE_SIZE") {
-        return next(taoLoi("File hoa don khong duoc vuot qua 5MB", 400));
+        return next(taoLoi("File hóa đơn không được vượt quá 5MB", 400));
       }
 
       if (loi.code === "LIMIT_FILE_COUNT") {
-        return next(taoLoi("Chi duoc upload mot file hoa don", 400));
+        return next(taoLoi("Chỉ được tải lên một file hóa đơn", 400));
       }
 
       return next(loi);

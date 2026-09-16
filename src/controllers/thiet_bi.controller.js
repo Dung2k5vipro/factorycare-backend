@@ -6,7 +6,7 @@ async function layDanhSachThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay danh sach thiet bi thanh cong",
+      thongBao: "Lấy danh sách thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -20,7 +20,7 @@ async function layChiTietThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay chi tiet thiet bi thanh cong",
+      thongBao: "Lấy chi tiết thiết bị thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -34,7 +34,7 @@ async function taoThietBi(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Tao thiet bi thanh cong",
+      thongBao: "Tạo thiết bị thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -48,7 +48,7 @@ async function capNhatThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Cap nhat thiet bi thanh cong",
+      thongBao: "Cập nhật thiết bị thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -63,7 +63,7 @@ async function capNhatTrangThai(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Cap nhat trang thai thiet bi thanh cong",
+      thongBao: "Cập nhật trạng thái thiết bị thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -81,7 +81,7 @@ async function dieuChuyenThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Dieu chuyen thiet bi thanh cong",
+      thongBao: "Điều chuyển thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -95,7 +95,7 @@ async function layLichSuDieuChuyen(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay lich su dieu chuyen thiet bi thanh cong",
+      thongBao: "Lấy lịch sử điều chuyển thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -109,7 +109,7 @@ async function capNhatBaoHanh(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Cap nhat bao hanh thiet bi thanh cong",
+      thongBao: "Cập nhật bảo hành thiết bị thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -123,7 +123,7 @@ async function layBaoHanh(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay bao hanh thiet bi thanh cong",
+      thongBao: "Lấy bảo hành thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -137,7 +137,7 @@ async function layHealthScore(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay health score thiet bi thanh cong",
+      thongBao: "Lấy điểm sức khỏe thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -151,7 +151,7 @@ async function layTimelineThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay timeline thiet bi thanh cong",
+      thongBao: "Lấy dòng thời gian thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -165,7 +165,7 @@ async function layQrThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay QR thiet bi thanh cong",
+      thongBao: "Lấy mã QR thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -179,7 +179,7 @@ async function layThietBiTheoQr(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lay thiet bi tu QR thanh cong",
+      thongBao: "Lấy thiết bị từ mã QR thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -194,7 +194,7 @@ async function quetQrThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Quet QR thiet bi thanh cong",
+      thongBao: "Quét mã QR thiết bị thành công",
       duLieu: thietBi
     });
   } catch (loi) {
@@ -208,7 +208,7 @@ async function previewImportThietBi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Preview import thiet bi thanh cong",
+      thongBao: "Xem trước dữ liệu nhập thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -225,7 +225,7 @@ async function importThietBi(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Import thiet bi thanh cong",
+      thongBao: "Nhập thiết bị thành công",
       duLieu: ketQua
     });
   } catch (loi) {

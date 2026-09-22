@@ -1,5 +1,8 @@
 const express = require("express");
 
+const baoCaoRoutes = require("./bao_cao.routes");
+const baoTriRoutes = require("./bao_tri.routes");
+const dashboardRoutes = require("./dashboard.routes");
 const healthRoutes = require("./health.routes");
 const loNhapRoutes = require("./lo_nhap.routes");
 const loaiThietBiRoutes = require("./loai_thiet_bi.routes");
@@ -21,5 +24,8 @@ router.use("/nha-cung-cap", nhaCungCapRoutes);
 router.use("/lo-nhap", loNhapRoutes);
 router.use("/thiet-bi", thietBiRoutes);
 router.use("/su-co", suCoRoutes);
+router.use("/bao-tri", baoTriRoutes);
+router.use("/dashboard", dashboardRoutes);
+router.use("/bao-cao", baoCaoRoutes);
 
 module.exports = router;

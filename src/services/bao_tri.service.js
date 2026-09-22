@@ -7,6 +7,7 @@ const keHoachBaoTriModel = require("../models/ke_hoach_bao_tri.model");
 const phieuBaoTriModel = require("../models/phieu_bao_tri.model");
 const thietBiModel = require("../models/thiet_bi.model");
 const thongBaoModel = require("../models/thong_bao.model");
+const { chuyenNgayThanhChuoi } = require("../utils/ngay");
 
 const SO_NGAY_CANH_BAO_MAC_DINH = 7;
 const SO_NGAY_CANH_BAO_TOI_DA = 90;
@@ -272,7 +273,7 @@ function chuyenPhieuBaoTri(phieuBaoTri) {
         email: phieuBaoTri.ky_thuat_vien_email
       }
       : null,
-    ngayDuKien: phieuBaoTri.ngay_du_kien,
+    ngayDuKien: chuyenNgayThanhChuoi(phieuBaoTri.ngay_du_kien),
     thoiGianBatDau: phieuBaoTri.thoi_gian_bat_dau,
     thoiGianHoanThanh: phieuBaoTri.thoi_gian_hoan_thanh,
     trangThai: phieuBaoTri.trang_thai,
@@ -285,7 +286,9 @@ function chuyenPhieuBaoTri(phieuBaoTri) {
     keHoach: {
       giaTriChuKy: phieuBaoTri.gia_tri_chu_ky,
       donViChuKy: phieuBaoTri.don_vi_chu_ky,
-      ngayBaoTriTiepTheo: phieuBaoTri.ngay_bao_tri_tiep_theo,
+      ngayBaoTriTiepTheo: chuyenNgayThanhChuoi(
+        phieuBaoTri.ngay_bao_tri_tiep_theo
+      ),
       trangThai: phieuBaoTri.ke_hoach_trang_thai,
       tenMauChecklist: phieuBaoTri.mau_checklist_ten
     },
@@ -949,7 +952,9 @@ function chuyenKeHoachSapDenHan(keHoachBaoTri) {
       : null,
     giaTriChuKy: keHoachBaoTri.gia_tri_chu_ky,
     donViChuKy: keHoachBaoTri.don_vi_chu_ky,
-    ngayBaoTriTiepTheo: keHoachBaoTri.ngay_bao_tri_tiep_theo,
+    ngayBaoTriTiepTheo: chuyenNgayThanhChuoi(
+      keHoachBaoTri.ngay_bao_tri_tiep_theo
+    ),
     soNgayConLai: Number(keHoachBaoTri.so_ngay_con_lai)
   };
 }
@@ -970,7 +975,7 @@ function chuyenPhieuQuaHan(phieuBaoTri) {
         email: phieuBaoTri.ky_thuat_vien_email
       }
       : null,
-    ngayDuKien: phieuBaoTri.ngay_du_kien,
+    ngayDuKien: chuyenNgayThanhChuoi(phieuBaoTri.ngay_du_kien),
     trangThai: phieuBaoTri.trang_thai,
     soNgayQuaHan: Number(phieuBaoTri.so_ngay_qua_han),
     dangThucHienTre: phieuBaoTri.trang_thai === TRANG_THAI_PHIEU_BAO_TRI.DANG_THUC_HIEN

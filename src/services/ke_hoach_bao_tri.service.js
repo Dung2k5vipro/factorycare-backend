@@ -11,6 +11,10 @@ const {
   kiemTraKyThuatVien,
   taoHoacCapNhatPhieuPhanCong
 } = require("./phan_cong_bao_tri.service");
+const {
+  chuyenNgayThanhChuoi,
+  tinhNgayTheoChuKy
+} = require("../utils/ngay");
 
 const DO_DAI_MO_TA_TOI_DA = 10000;
 
@@ -54,17 +58,6 @@ function layNgayHopLe(giaTri, tenTruong) {
     ngayKiemTra.getUTCDate() !== ngay
   ) {
     throw taoLoi(`${tenTruong} không hợp lệ`, 400);
-  }
-  return giaTri;
-}
-
-function dinhDangNgayTuCoSoDuLieu(giaTri) {
-  if (typeof giaTri === "string") return giaTri.slice(0, 10);
-  if (giaTri instanceof Date && !Number.isNaN(giaTri.getTime())) {
-    const nam = giaTri.getFullYear();
-    const thang = String(giaTri.getMonth() + 1).padStart(2, "0");
-    const ngay = String(giaTri.getDate()).padStart(2, "0");
-    return `${nam}-${thang}-${ngay}`;
   }
   return giaTri;
 }
@@ -119,8 +112,10 @@ function chuyenKeHoach(keHoach) {
       : null,
     giaTriChuKy: keHoach.gia_tri_chu_ky,
     donViChuKy: keHoach.don_vi_chu_ky,
-    ngayBatDau: keHoach.ngay_bat_dau,
-    ngayBaoTriTiepTheo: keHoach.ngay_bao_tri_tiep_theo,
+    ngayBatDau: chuyenNgayThanhChuoi(keHoach.ngay_bat_dau),
+    ngayBaoTriTiepTheo: chuyenNgayThanhChuoi(
+      keHoach.ngay_bao_tri_tiep_theo
+    ),
     trangThai: keHoach.trang_thai,
     moTa: keHoach.mo_ta,
     ngayTao: keHoach.ngay_tao,
@@ -224,13 +219,11 @@ async function taoKeHoach(duLieu) {
     layGiaTri(duLieu, ["ngayBatDau", "ngay_bat_dau"]),
     "Ngày bắt đầu"
   );
-  const ngayBaoTriTiepTheo = layNgayHopLe(
-    layGiaTri(duLieu, ["ngayBaoTriTiepTheo", "ngay_bao_tri_tiep_theo"]),
-    "Ngày bảo trì tiếp theo"
+  const ngayBaoTriTiepTheo = tinhNgayTheoChuKy(
+    ngayBatDau,
+    giaTriChuKy,
+    donViChuKy
   );
-  if (ngayBaoTriTiepTheo < ngayBatDau) {
-    throw taoLoi("Ngày bảo trì tiếp theo không được trước ngày bắt đầu", 400);
-  }
   const moTa = layMoTa(layGiaTri(duLieu, ["moTa", "mo_ta"]));
   const connection = await pool.getConnection();
 
@@ -315,16 +308,17 @@ async function capNhatKeHoach(id, duLieu) {
       donViRaw ?? hienTai.don_vi_chu_ky
     );
     const ngayBatDauRaw = layGiaTri(duLieu, ["ngayBatDau", "ngay_bat_dau"]);
-    const ngayTiepTheoRaw = layGiaTri(duLieu, ["ngayBaoTriTiepTheo", "ngay_bao_tri_tiep_theo"]);
     const ngayBatDau = ngayBatDauRaw === undefined
-      ? dinhDangNgayTuCoSoDuLieu(hienTai.ngay_bat_dau)
+      ? chuyenNgayThanhChuoi(hienTai.ngay_bat_dau)
       : layNgayHopLe(ngayBatDauRaw, "Ngày bắt đầu");
-    const ngayBaoTriTiepTheo = ngayTiepTheoRaw === undefined
-      ? dinhDangNgayTuCoSoDuLieu(hienTai.ngay_bao_tri_tiep_theo)
-      : layNgayHopLe(ngayTiepTheoRaw, "Ngày bảo trì tiếp theo");
-    if (ngayBaoTriTiepTheo < ngayBatDau) {
-      throw taoLoi("Ngày bảo trì tiếp theo không được trước ngày bắt đầu", 400);
-    }
+    const ngayBatDauHienTai = chuyenNgayThanhChuoi(hienTai.ngay_bat_dau);
+    const coThayDoiLich =
+      giaTriChuKy !== Number(hienTai.gia_tri_chu_ky) ||
+      donViChuKy !== hienTai.don_vi_chu_ky ||
+      ngayBatDau !== ngayBatDauHienTai;
+    const ngayBaoTriTiepTheo = coThayDoiLich
+      ? tinhNgayTheoChuKy(ngayBatDau, giaTriChuKy, donViChuKy)
+      : chuyenNgayThanhChuoi(hienTai.ngay_bao_tri_tiep_theo);
     const moTaRaw = layGiaTri(duLieu, ["moTa", "mo_ta"]);
     const moTa = moTaRaw === undefined ? hienTai.mo_ta : layMoTa(moTaRaw);
 
@@ -336,7 +330,7 @@ async function capNhatKeHoach(id, duLieu) {
       ngayBaoTriTiepTheo,
       moTa
     });
-    if (ngayTiepTheoRaw !== undefined) {
+    if (coThayDoiLich) {
       await phieuBaoTriModel.capNhatNgayDuKienTheoKeHoach(
         connection,
         keHoachId,

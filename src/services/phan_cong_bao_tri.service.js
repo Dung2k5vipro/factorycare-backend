@@ -11,6 +11,7 @@ const nguoiDungModel = require("../models/nguoi_dung.model");
 const phieuBaoTriModel = require("../models/phieu_bao_tri.model");
 const thietBiModel = require("../models/thiet_bi.model");
 const thongBaoModel = require("../models/thong_bao.model");
+const { chuyenNgayThanhChuoi } = require("../utils/ngay");
 
 function taoLoi(thongBao, maTrangThai) {
   const loi = new Error(thongBao);
@@ -166,8 +167,10 @@ function chuyenKeHoachCuaToi(keHoach) {
     },
     giaTriChuKy: keHoach.gia_tri_chu_ky,
     donViChuKy: keHoach.don_vi_chu_ky,
-    ngayBatDau: keHoach.ngay_bat_dau,
-    ngayBaoTriTiepTheo: keHoach.ngay_bao_tri_tiep_theo,
+    ngayBatDau: chuyenNgayThanhChuoi(keHoach.ngay_bat_dau),
+    ngayBaoTriTiepTheo: chuyenNgayThanhChuoi(
+      keHoach.ngay_bao_tri_tiep_theo
+    ),
     trangThai: keHoach.trang_thai,
     moTa: keHoach.mo_ta
   };
@@ -267,7 +270,7 @@ async function layLichSuPhanCong(id) {
         email: phieu.ky_thuat_vien_email
       }
       : null,
-    ngayDuKien: phieu.ngay_du_kien,
+    ngayDuKien: chuyenNgayThanhChuoi(phieu.ngay_du_kien),
     trangThai: phieu.trang_thai,
     thoiGianBatDau: phieu.thoi_gian_bat_dau,
     thoiGianHoanThanh: phieu.thoi_gian_hoan_thanh,

@@ -12,7 +12,7 @@ const suCoModel = require("../models/su_co.model");
 const thietBiModel = require("../models/thiet_bi.model");
 const thongBaoModel = require("../models/thong_bao.model");
 
-const SO_ANH_TOI_DA = 10;
+const SO_ANH_TOI_DA = 3;
 const DO_DAI_DUONG_DAN_ANH_TOI_DA = 1000;
 const DO_DAI_TIEU_DE_TOI_DA = 200;
 const DO_DAI_MO_TA_TOI_DA = 10000;
@@ -172,8 +172,8 @@ function layDanhSachLinhKienThayThe(giaTri) {
       throw taoLoi(`Linh kiện tại vị trí ${viTri + 1} không hợp lệ`, 400);
     }
 
-    const ten = layChuoiBatBuoc(
-      linhKien.ten,
+    const tenLinhKien = layChuoiBatBuoc(
+      layGiaTriTheoNhieuTen(linhKien, ["tenLinhKien", "ten"]),
       `Tên linh kiện tại vị trí ${viTri + 1}`,
       DO_DAI_TEN_LINH_KIEN_TOI_DA
     );
@@ -184,7 +184,18 @@ function layDanhSachLinhKienThayThe(giaTri) {
       throw taoLoi(`Số lượng linh kiện tại vị trí ${viTri + 1} phải lớn hơn 0`, 400);
     }
 
-    return { ten, soLuong };
+    const donVi = layChuoiTuyChon(
+      layGiaTriTheoNhieuTen(linhKien, ["donVi", "don_vi"]),
+      `Đơn vị linh kiện tại vị trí ${viTri + 1}`,
+      50
+    );
+    const ghiChu = layChuoiTuyChon(
+      layGiaTriTheoNhieuTen(linhKien, ["ghiChu", "ghi_chu"]),
+      `Ghi chú linh kiện tại vị trí ${viTri + 1}`,
+      500
+    );
+
+    return { tenLinhKien, soLuong, donVi, ghiChu };
   });
 
   return danhSachLinhKien.length > 0 ? danhSachLinhKien : null;
@@ -240,13 +251,17 @@ function layDuLieuSuaChuaTuBody(duLieu = {}) {
     "Ghi chú",
     DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
   );
+  const hinhAnhSuaChua = layDanhSachHinhAnh(
+    layGiaTriTheoNhieuTen(duLieu, ["hinhAnhSuaChua", "hinh_anh_sua_chua"])
+  );
 
   return {
     nguyenNhan,
     cachXuLy,
     ketQua,
     linhKienThayThe,
-    ghiChu
+    ghiChu,
+    hinhAnhSuaChua
   };
 }
 
@@ -312,7 +327,11 @@ function layThoiGianTuyChon(giaTri, tenTruong) {
 }
 
 function layDanhSachHinhAnh(giaTri) {
-  if (giaTri === undefined || giaTri === null) {
+  if (giaTri === undefined) {
+    return undefined;
+  }
+
+  if (giaTri === null) {
     return null;
   }
 
@@ -463,7 +482,11 @@ function chuyenJsonThanhMang(giaTri) {
   }
 }
 
-function hopNhatDuLieuSuaChua(duLieuMoi, hoSoHienTai = null) {
+function hopNhatDuLieuSuaChua(
+  duLieuMoi,
+  hoSoHienTai = null,
+  batBuocHoanThanh = false
+) {
   const duLieuDaHopNhat = {
     nguyenNhan: duLieuMoi.nguyenNhan !== undefined
       ? duLieuMoi.nguyenNhan
@@ -481,44 +504,60 @@ function hopNhatDuLieuSuaChua(duLieuMoi, hoSoHienTai = null) {
         : null,
     ghiChu: duLieuMoi.ghiChu !== undefined
       ? duLieuMoi.ghiChu
-      : hoSoHienTai && hoSoHienTai.ghi_chu
+      : hoSoHienTai && hoSoHienTai.ghi_chu,
+    hinhAnhSuaChua: duLieuMoi.hinhAnhSuaChua !== undefined
+      ? [
+          ...(hoSoHienTai ? chuyenJsonThanhMang(hoSoHienTai.hinh_anh) : []),
+          ...(duLieuMoi.hinhAnhSuaChua || [])
+        ].filter((duongDan, viTri, danhSach) =>
+          danhSach.indexOf(duongDan) === viTri
+        )
+      : hoSoHienTai
+        ? chuyenJsonThanhMang(hoSoHienTai.hinh_anh)
+        : []
   };
 
-  duLieuDaHopNhat.nguyenNhan = layChuoiBatBuoc(
-    duLieuDaHopNhat.nguyenNhan,
-    "Nguyên nhân",
-    DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
-  );
-  duLieuDaHopNhat.cachXuLy = layChuoiBatBuoc(
-    duLieuDaHopNhat.cachXuLy,
-    "Cách xử lý",
-    DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
-  );
-  duLieuDaHopNhat.ketQua = layKetQuaSuaChua(
-    duLieuDaHopNhat.ketQua,
-    true
-  );
+  if (batBuocHoanThanh) {
+    duLieuDaHopNhat.nguyenNhan = layChuoiBatBuoc(
+      duLieuDaHopNhat.nguyenNhan,
+      "Nguyên nhân",
+      DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
+    );
+    duLieuDaHopNhat.cachXuLy = layChuoiBatBuoc(
+      duLieuDaHopNhat.cachXuLy,
+      "Cách xử lý",
+      DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
+    );
+    duLieuDaHopNhat.ketQua = layKetQuaSuaChua(
+      duLieuDaHopNhat.ketQua,
+      true
+    );
+  }
 
   return duLieuDaHopNhat;
 }
 
 function chuyenLinhKienThanhJson(danhSachLinhKien) {
   return danhSachLinhKien && danhSachLinhKien.length > 0
-    ? JSON.stringify(danhSachLinhKien.map((linhKien) => ({
-        ten: linhKien.ten,
-        so_luong: linhKien.soLuong
+      ? JSON.stringify(danhSachLinhKien.map((linhKien) => ({
+        ten_linh_kien: linhKien.tenLinhKien,
+        so_luong: linhKien.soLuong,
+        don_vi: linhKien.donVi || null,
+        ghi_chu: linhKien.ghiChu || null
       })))
     : null;
 }
 
 function chuyenJsonThanhDanhSachLinhKien(giaTri) {
   return chuyenJsonThanhMang(giaTri).map((linhKien) => ({
-    ten: linhKien.ten,
+    tenLinhKien: linhKien.tenLinhKien || linhKien.ten_linh_kien || linhKien.ten,
     soLuong: Number(
       linhKien.soLuong !== undefined
         ? linhKien.soLuong
         : linhKien.so_luong
-    )
+    ),
+    donVi: linhKien.donVi || linhKien.don_vi || null,
+    ghiChu: linhKien.ghiChu || linhKien.ghi_chu || null
   }));
 }
 
@@ -535,6 +574,7 @@ function dinhDangHoSoSuaChua(hoSo, baoGomKyThuatVien = true) {
     thoiGianBatDau: hoSo.thoi_gian_bat_dau,
     thoiGianHoanThanh: hoSo.thoi_gian_hoan_thanh,
     ghiChu: hoSo.ghi_chu,
+    hinhAnhSuaChua: chuyenJsonThanhMang(hoSo.hinh_anh),
     ngayTao: hoSo.ngay_tao,
     ngayCapNhat: hoSo.ngay_cap_nhat
   };
@@ -585,12 +625,26 @@ function dinhDangThietBi(suCo) {
     id: suCo.thiet_bi_id,
     maThietBi: suCo.ma_thiet_bi,
     tenThietBi: suCo.ten_thiet_bi,
+    soSerial: suCo.so_serial,
+    model: suCo.model,
+    ngayBatDauBaoHanh: suCo.ngay_bat_dau_bao_hanh,
+    ngayHetBaoHanh: suCo.ngay_het_bao_hanh,
     trangThai: suCo.thiet_bi_trang_thai,
+    loaiThietBi: {
+      id: suCo.loai_thiet_bi_id,
+      tenLoai: suCo.ten_loai
+    },
     viTri: suCo.vi_tri_id
       ? {
           id: suCo.vi_tri_id,
           tenViTri: suCo.ten_vi_tri,
-          loaiViTri: suCo.loai_vi_tri
+          loaiViTri: suCo.loai_vi_tri,
+          duongDan: [
+            suCo.vi_tri_cu_ten,
+            suCo.vi_tri_ong_ten,
+            suCo.vi_tri_cha_ten,
+            suCo.ten_vi_tri
+          ].filter(Boolean)
         }
       : null
   };
@@ -646,12 +700,21 @@ function dinhDangSuCoDanhSach(suCo, {
     id: suCo.id,
     maSuCo: suCo.ma_su_co,
     tieuDe: suCo.tieu_de,
+    moTa: suCo.mo_ta,
     mucDo: suCo.muc_do,
     trangThai: suCo.trang_thai,
     thietBi: dinhDangThietBi(suCo),
     thoiGianBao: suCo.thoi_gian_bao,
     thoiGianPhanCong: suCo.thoi_gian_phan_cong
   };
+
+  if (
+    !suCo.ky_thuat_vien_id &&
+    suCo.muc_do === MUC_DO_SU_CO.NGHIEM_TRONG &&
+    suCo.trang_thai === TRANG_THAI_SU_CO.MOI
+  ) {
+    duLieu.coTheNhanKhanCap = true;
+  }
 
   if (baoGomNguoiBao) {
     duLieu.nguoiBao = dinhDangNguoiBaoTomTat(suCo);
@@ -671,6 +734,8 @@ function dinhDangSuCoChiTiet(suCo, tuyChon = {}) {
     hinhAnh: chuyenJsonThanhMang(suCo.hinh_anh),
     thoiGianXayRa: suCo.thoi_gian_xay_ra,
     thoiGianHoanThanh: suCo.thoi_gian_hoan_thanh,
+    lyDoChoLinhKien: suCo.ly_do_cho_linh_kien,
+    ghiChuChoLinhKien: suCo.ghi_chu_cho_linh_kien,
     ngayTao: suCo.ngay_tao,
     ngayCapNhat: suCo.ngay_cap_nhat
   };
@@ -786,6 +851,22 @@ async function taoThongBaoSuCoNghiemTrong(
       nguoiDungId: quanTriVien.id,
       tieuDe: `Sự cố nghiêm trọng ${maSuCo}`,
       noiDung: `Thiết bị ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vừa được báo sự cố nghiêm trọng: ${tieuDe}.`,
+      loaiThongBao: LOAI_THONG_BAO.SU_CO,
+      doiTuongLienQuanId: suCoId
+    }, connection);
+  }
+
+  const danhSachKyThuatVien = await nguoiDungModel.layDanhSachTheoVaiTroVaTrangThai(
+    VAI_TRO.KY_THUAT_VIEN,
+    TRANG_THAI_NGUOI_DUNG.HOAT_DONG,
+    connection
+  );
+
+  for (const kyThuatVien of danhSachKyThuatVien) {
+    await thongBaoModel.taoThongBao({
+      nguoiDungId: kyThuatVien.id,
+      tieuDe: `Khẩn cấp ${maSuCo}`,
+      noiDung: `Thiết bị ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vừa phát sinh sự cố khẩn cấp: ${tieuDe}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -1162,7 +1243,8 @@ async function layCongViecCuaToi(query = {}, nguoiDungHienTai = {}) {
   const dieuKienLoc = {
     ...layDieuKienLoc(query),
     nguoiBaoId: null,
-    kyThuatVienId
+    kyThuatVienId: null,
+    congViecKyThuatVienId: kyThuatVienId
   };
 
   return layKetQuaDanhSach(
@@ -1184,14 +1266,24 @@ async function layChiTietCongViecCuaToi(id, nguoiDungHienTai = {}) {
     throw taoLoi("Không tìm thấy sự cố", 404);
   }
 
-  if (Number(suCo.ky_thuat_vien_id) !== kyThuatVienId) {
+  const laKhanCapChuaCoNguoiNhan =
+    !suCo.ky_thuat_vien_id &&
+    suCo.muc_do === MUC_DO_SU_CO.NGHIEM_TRONG &&
+    suCo.trang_thai === TRANG_THAI_SU_CO.MOI;
+
+  if (
+    Number(suCo.ky_thuat_vien_id) !== kyThuatVienId &&
+    !laKhanCapChuaCoNguoiNhan
+  ) {
     throw taoLoi("Bạn không có quyền xem công việc này", 403);
   }
 
-  const danhSachHoSo = await hoSoSuaChuaModel.layDanhSachTheoSuCoVaKyThuatVien(
-    suCoId,
-    kyThuatVienId
-  );
+  const danhSachHoSo = laKhanCapChuaCoNguoiNhan
+    ? []
+    : await hoSoSuaChuaModel.layDanhSachTheoSuCoVaKyThuatVien(
+        suCoId,
+        kyThuatVienId
+      );
   const duLieuSuCo = dinhDangSuCoChiTiet(suCo, {
     baoGomNguoiBao: true,
     baoGomKyThuatVien: false
@@ -1200,6 +1292,7 @@ async function layChiTietCongViecCuaToi(id, nguoiDungHienTai = {}) {
   duLieuSuCo.danhSachHoSoSuaChua = danhSachHoSo.map((hoSo) =>
     dinhDangHoSoSuaChua(hoSo, false)
   );
+  duLieuSuCo.coTheNhanKhanCap = laKhanCapChuaCoNguoiNhan;
 
   return duLieuSuCo;
 }
@@ -1268,6 +1361,61 @@ async function layChiTietCongViecKemHoSo(
   );
 
   return duLieuSuCo;
+}
+
+async function nhanCongViecKhanCap(id, nguoiDungHienTai = {}) {
+  const suCoId = layIdHopLe(id, "Sự cố");
+  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Kỹ thuật viên");
+  let connection;
+  let daBatDauTransaction = false;
+
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    daBatDauTransaction = true;
+
+    const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
+    const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
+      kyThuatVienId,
+      connection
+    );
+
+    if (!suCo) throw taoLoi("Không tìm thấy sự cố", 404);
+    if (
+      !kyThuatVien ||
+      kyThuatVien.vai_tro !== VAI_TRO.KY_THUAT_VIEN ||
+      kyThuatVien.trang_thai !== TRANG_THAI_NGUOI_DUNG.HOAT_DONG
+    ) {
+      throw taoLoi("Tài khoản kỹ thuật viên không hợp lệ", 403);
+    }
+    if (suCo.muc_do !== MUC_DO_SU_CO.NGHIEM_TRONG) {
+      throw taoLoi("Chỉ có thể nhận trực tiếp sự cố khẩn cấp", 409);
+    }
+    if (suCo.ky_thuat_vien_id) {
+      throw taoLoi("Công việc đã có kỹ thuật viên nhận", 409);
+    }
+    if (suCo.trang_thai !== TRANG_THAI_SU_CO.MOI) {
+      throw taoLoi("Trạng thái công việc đã thay đổi, vui lòng tải lại", 409);
+    }
+
+    const soBanGhiDaCapNhat = await suCoModel.nhanCongViecKhanCap(
+      connection,
+      suCoId,
+      kyThuatVienId
+    );
+    if (soBanGhiDaCapNhat !== 1) {
+      throw taoLoi("Công việc đã có kỹ thuật viên khác nhận", 409);
+    }
+
+    await connection.commit();
+    daBatDauTransaction = false;
+    return layChiTietCongViecKemHoSo(suCoId, kyThuatVienId, connection);
+  } catch (loi) {
+    if (connection && daBatDauTransaction) await connection.rollback();
+    throw loi;
+  } finally {
+    if (connection) connection.release();
+  }
 }
 
 async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
@@ -1431,6 +1579,9 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     const linhKienThayThe = chuyenLinhKienThanhJson(
       duLieuHopLe.linhKienThayThe
     );
+    const hinhAnh = duLieuHopLe.hinhAnhSuaChua.length
+      ? JSON.stringify(duLieuHopLe.hinhAnhSuaChua)
+      : null;
 
     if (hoSoHienTai) {
       const soBanGhiDaCapNhat = await hoSoSuaChuaModel.capNhatHoSoSuaChua(
@@ -1438,7 +1589,8 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
         hoSoHienTai.id,
         {
           ...duLieuHopLe,
-          linhKienThayThe
+          linhKienThayThe,
+          hinhAnh
         }
       );
 
@@ -1451,6 +1603,7 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
         kyThuatVienId,
         ...duLieuHopLe,
         linhKienThayThe,
+        hinhAnh,
         thoiGianBatDau: suCo.ngay_cap_nhat,
         thoiGianHoanThanh: null
       });
@@ -1475,6 +1628,88 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     if (connection) {
       connection.release();
     }
+  }
+}
+
+async function choLinhKien(id, duLieu = {}, nguoiDungHienTai = {}) {
+  const suCoId = layIdHopLe(id, "Sự cố");
+  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Kỹ thuật viên");
+  const lyDo = layChuoiBatBuoc(duLieu.lyDo, "Lý do", 500);
+  const ghiChu = layChuoiTuyChon(duLieu.ghiChu, "Ghi chú", 1000);
+  let connection;
+  let daBatDauTransaction = false;
+
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    daBatDauTransaction = true;
+    const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
+    if (!suCo) throw taoLoi("Không tìm thấy sự cố", 404);
+    const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
+      kyThuatVienId,
+      connection
+    );
+    kiemTraKyThuatVienXuLyHopLe(suCo, kyThuatVienId, kyThuatVien);
+    if (suCo.trang_thai !== TRANG_THAI_SU_CO.DANG_XU_LY) {
+      throw taoLoi("Chỉ có thể chờ linh kiện khi công việc đang xử lý", 409);
+    }
+    const soBanGhiDaCapNhat = await suCoModel.choLinhKien(
+      connection,
+      suCoId,
+      kyThuatVienId,
+      lyDo,
+      ghiChu
+    );
+    if (soBanGhiDaCapNhat !== 1) {
+      throw taoLoi("Trạng thái công việc đã thay đổi, vui lòng tải lại", 409);
+    }
+    await connection.commit();
+    daBatDauTransaction = false;
+    return layChiTietCongViecKemHoSo(suCoId, kyThuatVienId, connection);
+  } catch (loi) {
+    if (connection && daBatDauTransaction) await connection.rollback();
+    throw loi;
+  } finally {
+    if (connection) connection.release();
+  }
+}
+
+async function tiepTucXuLy(id, nguoiDungHienTai = {}) {
+  const suCoId = layIdHopLe(id, "Sự cố");
+  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Kỹ thuật viên");
+  let connection;
+  let daBatDauTransaction = false;
+
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    daBatDauTransaction = true;
+    const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
+    if (!suCo) throw taoLoi("Không tìm thấy sự cố", 404);
+    const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
+      kyThuatVienId,
+      connection
+    );
+    kiemTraKyThuatVienXuLyHopLe(suCo, kyThuatVienId, kyThuatVien);
+    if (suCo.trang_thai !== TRANG_THAI_SU_CO.CHO_LINH_KIEN) {
+      throw taoLoi("Công việc không ở trạng thái chờ linh kiện", 409);
+    }
+    const soBanGhiDaCapNhat = await suCoModel.tiepTucXuLy(
+      connection,
+      suCoId,
+      kyThuatVienId
+    );
+    if (soBanGhiDaCapNhat !== 1) {
+      throw taoLoi("Trạng thái công việc đã thay đổi, vui lòng tải lại", 409);
+    }
+    await connection.commit();
+    daBatDauTransaction = false;
+    return layChiTietCongViecKemHoSo(suCoId, kyThuatVienId, connection);
+  } catch (loi) {
+    if (connection && daBatDauTransaction) await connection.rollback();
+    throw loi;
+  } finally {
+    if (connection) connection.release();
   }
 }
 
@@ -1563,10 +1798,17 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
       throw taoLoi("Hồ sơ sửa chữa thuộc về kỹ thuật viên khác", 403);
     }
 
-    const duLieuHopLe = hopNhatDuLieuSuaChua(duLieuMoi, hoSoHienTai);
+    const duLieuHopLe = hopNhatDuLieuSuaChua(
+      duLieuMoi,
+      hoSoHienTai,
+      true
+    );
     const linhKienThayThe = chuyenLinhKienThanhJson(
       duLieuHopLe.linhKienThayThe
     );
+    const hinhAnh = duLieuHopLe.hinhAnhSuaChua.length
+      ? JSON.stringify(duLieuHopLe.hinhAnhSuaChua)
+      : null;
     const thoiGianHoanThanh = await suCoModel.layThoiGianHienTai(connection);
 
     if (hoSoHienTai) {
@@ -1576,6 +1818,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
         {
           ...duLieuHopLe,
           linhKienThayThe,
+          hinhAnh,
           thoiGianHoanThanh
         }
       );
@@ -1589,6 +1832,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
         kyThuatVienId,
         ...duLieuHopLe,
         linhKienThayThe,
+        hinhAnh,
         thoiGianBatDau: suCo.ngay_cap_nhat,
         thoiGianHoanThanh
       });
@@ -1662,8 +1906,11 @@ module.exports = {
   phanCongKyThuatVien,
   layCongViecCuaToi,
   layChiTietCongViecCuaToi,
+  nhanCongViecKhanCap,
   batDauXuLySuCo,
   capNhatHoSoSuaChua,
+  choLinhKien,
+  tiepTucXuLy,
   layHoSoSuaChuaCuaToi,
   hoanThanhSuaChua
 };

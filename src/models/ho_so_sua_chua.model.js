@@ -17,6 +17,7 @@ function taoCauSelectHoSoSuaChua() {
       hssc.thoi_gian_bat_dau,
       hssc.thoi_gian_hoan_thanh,
       hssc.ghi_chu,
+      hssc.hinh_anh,
       hssc.ngay_tao,
       hssc.ngay_cap_nhat,
       ktv.ho_ten AS ky_thuat_vien_ho_ten,
@@ -89,6 +90,7 @@ async function timHoSoDangXuLyDeCapNhat(suCoId, connection) {
         thoi_gian_bat_dau,
         thoi_gian_hoan_thanh,
         ghi_chu,
+        hinh_anh,
         ngay_tao,
         ngay_cap_nhat
       FROM ho_so_sua_chua
@@ -113,7 +115,8 @@ async function taoHoSoSuaChua(connection, {
   ketQua,
   thoiGianBatDau,
   thoiGianHoanThanh = null,
-  ghiChu = null
+  ghiChu = null,
+  hinhAnh = null
 }) {
   const [ketQuaChen] = await connection.execute(
     `
@@ -126,9 +129,10 @@ async function taoHoSoSuaChua(connection, {
         ket_qua,
         thoi_gian_bat_dau,
         thoi_gian_hoan_thanh,
-        ghi_chu
+        ghi_chu,
+        hinh_anh
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
     [
       suCoId,
@@ -139,7 +143,8 @@ async function taoHoSoSuaChua(connection, {
       ketQua,
       thoiGianBatDau,
       thoiGianHoanThanh,
-      ghiChu
+      ghiChu,
+      hinhAnh
     ]
   );
 
@@ -151,7 +156,8 @@ async function capNhatHoSoSuaChua(connection, id, {
   cachXuLy,
   linhKienThayThe = null,
   ketQua,
-  ghiChu = null
+  ghiChu = null,
+  hinhAnh = null
 }) {
   const [ketQuaCapNhat] = await connection.execute(
     `
@@ -161,11 +167,12 @@ async function capNhatHoSoSuaChua(connection, id, {
         cach_xu_ly = ?,
         linh_kien_thay_the = ?,
         ket_qua = ?,
-        ghi_chu = ?
+        ghi_chu = ?,
+        hinh_anh = ?
       WHERE id = ?
         AND thoi_gian_hoan_thanh IS NULL
     `,
-    [nguyenNhan, cachXuLy, linhKienThayThe, ketQua, ghiChu, id]
+    [nguyenNhan, cachXuLy, linhKienThayThe, ketQua, ghiChu, hinhAnh, id]
   );
 
   return ketQuaCapNhat.affectedRows;
@@ -177,6 +184,7 @@ async function hoanThanhHoSoSuaChua(connection, id, {
   linhKienThayThe = null,
   ketQua,
   ghiChu = null,
+  hinhAnh = null,
   thoiGianHoanThanh
 }) {
   const [ketQuaCapNhat] = await connection.execute(
@@ -188,6 +196,7 @@ async function hoanThanhHoSoSuaChua(connection, id, {
         linh_kien_thay_the = ?,
         ket_qua = ?,
         ghi_chu = ?,
+        hinh_anh = ?,
         thoi_gian_hoan_thanh = ?
       WHERE id = ?
         AND thoi_gian_hoan_thanh IS NULL
@@ -198,6 +207,7 @@ async function hoanThanhHoSoSuaChua(connection, id, {
       linhKienThayThe,
       ketQua,
       ghiChu,
+      hinhAnh,
       thoiGianHoanThanh,
       id
     ]

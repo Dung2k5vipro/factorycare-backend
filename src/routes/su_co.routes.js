@@ -3,6 +3,10 @@ const express = require("express");
 const VAI_TRO = require("../constants/vai_tro");
 const suCoController = require("../controllers/su_co.controller");
 const { phanQuyen } = require("../middlewares/phan_quyen.middleware");
+const {
+  uploadAnhSuCo,
+  uploadAnhSuaChua
+} = require("../middlewares/upload_su_co.middleware");
 const { xacThuc } = require("../middlewares/xac_thuc.middleware");
 
 const router = express.Router();
@@ -12,6 +16,7 @@ router.use(xacThuc);
 router.post(
   "/",
   phanQuyen(VAI_TRO.NHAN_VIEN),
+  uploadAnhSuCo,
   suCoController.taoSuCo
 );
 
@@ -58,6 +63,12 @@ router.post(
 );
 
 router.patch(
+  "/:id/nhan-cong-viec",
+  phanQuyen(VAI_TRO.KY_THUAT_VIEN),
+  suCoController.nhanCongViecKhanCap
+);
+
+router.patch(
   "/:id/bat-dau-xu-ly",
   phanQuyen(VAI_TRO.KY_THUAT_VIEN),
   suCoController.batDauXuLySuCo
@@ -66,7 +77,20 @@ router.patch(
 router.patch(
   "/:id/sua-chua",
   phanQuyen(VAI_TRO.KY_THUAT_VIEN),
+  uploadAnhSuaChua,
   suCoController.capNhatHoSoSuaChua
+);
+
+router.patch(
+  "/:id/cho-linh-kien",
+  phanQuyen(VAI_TRO.KY_THUAT_VIEN),
+  suCoController.choLinhKien
+);
+
+router.patch(
+  "/:id/tiep-tuc-xu-ly",
+  phanQuyen(VAI_TRO.KY_THUAT_VIEN),
+  suCoController.tiepTucXuLy
 );
 
 router.get(
@@ -78,6 +102,7 @@ router.get(
 router.post(
   "/:id/hoan-thanh",
   phanQuyen(VAI_TRO.KY_THUAT_VIEN),
+  uploadAnhSuaChua,
   suCoController.hoanThanhSuaChua
 );
 

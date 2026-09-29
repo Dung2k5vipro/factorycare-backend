@@ -22,14 +22,25 @@ function taoCauSelectSuCo() {
       sc.thoi_gian_bao,
       sc.thoi_gian_phan_cong,
       sc.thoi_gian_hoan_thanh,
+      sc.ly_do_cho_linh_kien,
+      sc.ghi_chu_cho_linh_kien,
       sc.ngay_tao,
       sc.ngay_cap_nhat,
       tb.ma_thiet_bi,
       tb.ten_thiet_bi,
+      tb.so_serial,
+      tb.model,
+      tb.ngay_bat_dau_bao_hanh,
+      tb.ngay_het_bao_hanh,
       tb.trang_thai AS thiet_bi_trang_thai,
+      ltb.id AS loai_thiet_bi_id,
+      ltb.ten_loai,
       tb.vi_tri_id,
       vt.ten_vi_tri,
       vt.loai_vi_tri,
+      vt_cha.ten_vi_tri AS vi_tri_cha_ten,
+      vt_ong.ten_vi_tri AS vi_tri_ong_ten,
+      vt_cu.ten_vi_tri AS vi_tri_cu_ten,
       nb.ho_ten AS nguoi_bao_ho_ten,
       nb.email AS nguoi_bao_email,
       nb.so_dien_thoai AS nguoi_bao_so_dien_thoai,
@@ -39,7 +50,11 @@ function taoCauSelectSuCo() {
       ktv.trang_thai AS ky_thuat_vien_trang_thai
     FROM su_co sc
     INNER JOIN thiet_bi tb ON tb.id = sc.thiet_bi_id
+    INNER JOIN loai_thiet_bi ltb ON ltb.id = tb.loai_thiet_bi_id
     LEFT JOIN vi_tri vt ON vt.id = tb.vi_tri_id
+    LEFT JOIN vi_tri vt_cha ON vt_cha.id = vt.vi_tri_cha_id
+    LEFT JOIN vi_tri vt_ong ON vt_ong.id = vt_cha.vi_tri_cha_id
+    LEFT JOIN vi_tri vt_cu ON vt_cu.id = vt_ong.vi_tri_cha_id
     INNER JOIN nguoi_dung nb ON nb.id = sc.nguoi_bao_id
     LEFT JOIN nguoi_dung ktv ON ktv.id = sc.ky_thuat_vien_id
   `;
@@ -52,6 +67,7 @@ function taoDieuKienLoc({
   thietBiId = null,
   nguoiBaoId = null,
   kyThuatVienId = null,
+  congViecKyThuatVienId = null,
   tuNgay = null,
   denNgay = null
 }) {
@@ -101,6 +117,20 @@ function taoDieuKienLoc({
     thamSo.push(kyThuatVienId);
   }
 
+  if (congViecKyThuatVienId) {
+    dieuKien += `
+      AND (
+        sc.ky_thuat_vien_id = ?
+        OR (
+          sc.ky_thuat_vien_id IS NULL
+          AND sc.muc_do = 'NGHIEM_TRONG'
+          AND sc.trang_thai = 'MOI'
+        )
+      )
+    `;
+    thamSo.push(congViecKyThuatVienId);
+  }
+
   if (tuNgay) {
     dieuKien += " AND sc.thoi_gian_bao >= ?";
     thamSo.push(tuNgay);
@@ -136,6 +166,7 @@ async function layDanhSachSuCo({
   thietBiId = null,
   nguoiBaoId = null,
   kyThuatVienId = null,
+  congViecKyThuatVienId = null,
   tuNgay = null,
   denNgay = null,
   gioiHan = 10,
@@ -148,6 +179,7 @@ async function layDanhSachSuCo({
     thietBiId,
     nguoiBaoId,
     kyThuatVienId,
+    congViecKyThuatVienId,
     tuNgay,
     denNgay
   });
@@ -172,6 +204,7 @@ async function demTongSuCo({
   thietBiId = null,
   nguoiBaoId = null,
   kyThuatVienId = null,
+  congViecKyThuatVienId = null,
   tuNgay = null,
   denNgay = null
 }) {
@@ -182,6 +215,7 @@ async function demTongSuCo({
     thietBiId,
     nguoiBaoId,
     kyThuatVienId,
+    congViecKyThuatVienId,
     tuNgay,
     denNgay
   });
@@ -239,6 +273,8 @@ async function timTheoIdDeCapNhat(id, connection) {
         muc_do,
         trang_thai,
         thoi_gian_hoan_thanh,
+        ly_do_cho_linh_kien,
+        ghi_chu_cho_linh_kien,
         ngay_cap_nhat
       FROM su_co
       WHERE id = ?
@@ -264,7 +300,7 @@ async function laySuCoDangMoTheoThietBi(thietBiId, connection = null) {
         thoi_gian_bao
       FROM su_co
       WHERE thiet_bi_id = ?
-        AND trang_thai IN (?, ?, ?)
+        AND trang_thai IN (?, ?, ?, ?)
       ORDER BY thoi_gian_bao DESC, id DESC
       LIMIT 10
     `,
@@ -272,7 +308,8 @@ async function laySuCoDangMoTheoThietBi(thietBiId, connection = null) {
       thietBiId,
       TRANG_THAI_SU_CO.MOI,
       TRANG_THAI_SU_CO.DA_PHAN_CONG,
-      TRANG_THAI_SU_CO.DANG_XU_LY
+      TRANG_THAI_SU_CO.DANG_XU_LY,
+      TRANG_THAI_SU_CO.CHO_LINH_KIEN
     ]
   );
 
@@ -378,6 +415,78 @@ async function capNhatPhanCong(connection, suCoId, kyThuatVienId) {
   return ketQua.affectedRows;
 }
 
+async function nhanCongViecKhanCap(connection, suCoId, kyThuatVienId) {
+  const [ketQua] = await connection.execute(
+    `
+      UPDATE su_co
+      SET
+        ky_thuat_vien_id = ?,
+        thoi_gian_phan_cong = CURRENT_TIMESTAMP,
+        trang_thai = ?
+      WHERE id = ?
+        AND ky_thuat_vien_id IS NULL
+        AND muc_do = 'NGHIEM_TRONG'
+        AND trang_thai = ?
+    `,
+    [
+      kyThuatVienId,
+      TRANG_THAI_SU_CO.DA_PHAN_CONG,
+      suCoId,
+      TRANG_THAI_SU_CO.MOI
+    ]
+  );
+  return ketQua.affectedRows;
+}
+
+async function choLinhKien(
+  connection,
+  suCoId,
+  kyThuatVienId,
+  lyDo,
+  ghiChu
+) {
+  const [ketQua] = await connection.execute(
+    `
+      UPDATE su_co
+      SET
+        trang_thai = ?,
+        ly_do_cho_linh_kien = ?,
+        ghi_chu_cho_linh_kien = ?
+      WHERE id = ?
+        AND ky_thuat_vien_id = ?
+        AND trang_thai = ?
+    `,
+    [
+      TRANG_THAI_SU_CO.CHO_LINH_KIEN,
+      lyDo,
+      ghiChu,
+      suCoId,
+      kyThuatVienId,
+      TRANG_THAI_SU_CO.DANG_XU_LY
+    ]
+  );
+  return ketQua.affectedRows;
+}
+
+async function tiepTucXuLy(connection, suCoId, kyThuatVienId) {
+  const [ketQua] = await connection.execute(
+    `
+      UPDATE su_co
+      SET trang_thai = ?
+      WHERE id = ?
+        AND ky_thuat_vien_id = ?
+        AND trang_thai = ?
+    `,
+    [
+      TRANG_THAI_SU_CO.DANG_XU_LY,
+      suCoId,
+      kyThuatVienId,
+      TRANG_THAI_SU_CO.CHO_LINH_KIEN
+    ]
+  );
+  return ketQua.affectedRows;
+}
+
 async function batDauXuLy(connection, suCoId, kyThuatVienId) {
   const [ketQua] = await connection.execute(
     `
@@ -437,14 +546,15 @@ async function demSuCoDangMoKhac(
       FROM su_co
       WHERE thiet_bi_id = ?
         AND id <> ?
-        AND trang_thai IN (?, ?, ?)
+        AND trang_thai IN (?, ?, ?, ?)
     `,
     [
       thietBiId,
       suCoBoQuaId,
       TRANG_THAI_SU_CO.MOI,
       TRANG_THAI_SU_CO.DA_PHAN_CONG,
-      TRANG_THAI_SU_CO.DANG_XU_LY
+      TRANG_THAI_SU_CO.DANG_XU_LY,
+      TRANG_THAI_SU_CO.CHO_LINH_KIEN
     ]
   );
 
@@ -471,7 +581,10 @@ module.exports = {
   laySoThuTuMaLonNhatTheoTienTo,
   taoSuCo,
   capNhatPhanCong,
+  nhanCongViecKhanCap,
   batDauXuLy,
+  choLinhKien,
+  tiepTucXuLy,
   hoanThanhXuLy,
   demSuCoDangMoKhac,
   layThoiGianHienTai

@@ -1,12 +1,57 @@
 const suCoService = require("../services/su_co.service");
+const {
+  layDanhSachDuongDanAnh,
+  xoaAnhDaTai
+} = require("../middlewares/upload_su_co.middleware");
+
+function chuanHoaBodyMultipart(req, tenTruongAnh) {
+  const body = { ...req.body };
+  for (const tenTruong of [
+    "linhKienThayThe",
+    "hinhAnh",
+    "hinhAnhSuaChua"
+  ]) {
+    if (typeof body[tenTruong] === "string") {
+      try {
+        body[tenTruong] = JSON.parse(body[tenTruong]);
+      } catch {
+        // Service sẽ trả lỗi validation nhất quán cho dữ liệu không hợp lệ.
+      }
+    }
+  }
+  if (req.files?.length) {
+    body[tenTruongAnh] = layDanhSachDuongDanAnh(req.files);
+  }
+  return body;
+}
 
 async function taoSuCo(req, res, next) {
   try {
-    const suCo = await suCoService.taoSuCo(req.body, req.nguoiDung);
+    const suCo = await suCoService.taoSuCo(
+      chuanHoaBodyMultipart(req, "hinhAnh"),
+      req.nguoiDung
+    );
 
     return res.status(201).json({
       thanhCong: true,
       thongBao: "Tạo sự cố thành công",
+      duLieu: suCo
+    });
+  } catch (loi) {
+    await xoaAnhDaTai(req.files);
+    return next(loi);
+  }
+}
+
+async function nhanCongViecKhanCap(req, res, next) {
+  try {
+    const suCo = await suCoService.nhanCongViecKhanCap(
+      req.params.id,
+      req.nguoiDung
+    );
+    return res.status(200).json({
+      thanhCong: true,
+      thongBao: "Nhận công việc khẩn cấp thành công",
       duLieu: suCo
     });
   } catch (loi) {
@@ -164,7 +209,7 @@ async function capNhatHoSoSuaChua(req, res, next) {
   try {
     const hoSoSuaChua = await suCoService.capNhatHoSoSuaChua(
       req.params.id,
-      req.body,
+      chuanHoaBodyMultipart(req, "hinhAnhSuaChua"),
       req.nguoiDung
     );
 
@@ -172,6 +217,40 @@ async function capNhatHoSoSuaChua(req, res, next) {
       thanhCong: true,
       thongBao: "Lưu hồ sơ sửa chữa thành công",
       duLieu: hoSoSuaChua
+    });
+  } catch (loi) {
+    await xoaAnhDaTai(req.files);
+    return next(loi);
+  }
+}
+
+async function choLinhKien(req, res, next) {
+  try {
+    const suCo = await suCoService.choLinhKien(
+      req.params.id,
+      req.body,
+      req.nguoiDung
+    );
+    return res.status(200).json({
+      thanhCong: true,
+      thongBao: "Đã chuyển công việc sang chờ linh kiện",
+      duLieu: suCo
+    });
+  } catch (loi) {
+    return next(loi);
+  }
+}
+
+async function tiepTucXuLy(req, res, next) {
+  try {
+    const suCo = await suCoService.tiepTucXuLy(
+      req.params.id,
+      req.nguoiDung
+    );
+    return res.status(200).json({
+      thanhCong: true,
+      thongBao: "Tiếp tục xử lý công việc thành công",
+      duLieu: suCo
     });
   } catch (loi) {
     return next(loi);
@@ -199,7 +278,7 @@ async function hoanThanhSuaChua(req, res, next) {
   try {
     const suCo = await suCoService.hoanThanhSuaChua(
       req.params.id,
-      req.body,
+      chuanHoaBodyMultipart(req, "hinhAnhSuaChua"),
       req.nguoiDung
     );
 
@@ -209,6 +288,7 @@ async function hoanThanhSuaChua(req, res, next) {
       duLieu: suCo
     });
   } catch (loi) {
+    await xoaAnhDaTai(req.files);
     return next(loi);
   }
 }
@@ -223,8 +303,11 @@ module.exports = {
   phanCongKyThuatVien,
   layCongViecCuaToi,
   layChiTietCongViecCuaToi,
+  nhanCongViecKhanCap,
   batDauXuLySuCo,
   capNhatHoSoSuaChua,
+  choLinhKien,
+  tiepTucXuLy,
   layHoSoSuaChuaCuaToi,
   hoanThanhSuaChua
 };

@@ -68,6 +68,9 @@ function taoCauSelectThietBi() {
       ltb.ten_loai,
       vt.ten_vi_tri,
       vt.loai_vi_tri,
+      vt_cha.ten_vi_tri AS vi_tri_cha_ten,
+      vt_ong.ten_vi_tri AS vi_tri_ong_ten,
+      vt_cu.ten_vi_tri AS vi_tri_cu_ten,
       ln.ma_lo,
       ln.so_hoa_don,
       ln.ngay_nhap,
@@ -76,6 +79,9 @@ function taoCauSelectThietBi() {
     FROM thiet_bi tb
     INNER JOIN loai_thiet_bi ltb ON ltb.id = tb.loai_thiet_bi_id
     LEFT JOIN vi_tri vt ON vt.id = tb.vi_tri_id
+    LEFT JOIN vi_tri vt_cha ON vt_cha.id = vt.vi_tri_cha_id
+    LEFT JOIN vi_tri vt_ong ON vt_ong.id = vt_cha.vi_tri_cha_id
+    LEFT JOIN vi_tri vt_cu ON vt_cu.id = vt_ong.vi_tri_cha_id
     LEFT JOIN lo_nhap ln ON ln.id = tb.lo_nhap_id
     LEFT JOIN nha_cung_cap ncc ON ncc.id = ln.nha_cung_cap_id
   `;

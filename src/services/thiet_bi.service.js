@@ -262,7 +262,13 @@ function dinhDangViTriTuDong(thietBi) {
   return {
     id: thietBi.vi_tri_id,
     tenViTri: thietBi.ten_vi_tri,
-    loaiViTri: thietBi.loai_vi_tri
+    loaiViTri: thietBi.loai_vi_tri,
+    duongDan: [
+      thietBi.vi_tri_cu_ten,
+      thietBi.vi_tri_ong_ten,
+      thietBi.vi_tri_cha_ten,
+      thietBi.ten_vi_tri
+    ].filter(Boolean)
   };
 }
 
@@ -340,12 +346,18 @@ function dinhDangThietBi(thietBi, vaiTro = VAI_TRO.NHAN_VIEN) {
     ngayCapNhat: thietBi.ngay_cap_nhat
   };
 
-  if (vaiTro === VAI_TRO.QUAN_TRI_VIEN) {
-    duLieu.loNhap = dinhDangLoNhapTuDong(thietBi);
-    duLieu.giaMua = thietBi.gia_mua === null ? null : Number(thietBi.gia_mua);
+  if (
+    vaiTro === VAI_TRO.QUAN_TRI_VIEN ||
+    vaiTro === VAI_TRO.KY_THUAT_VIEN
+  ) {
     duLieu.ngayBatDauBaoHanh = thietBi.ngay_bat_dau_bao_hanh;
     duLieu.ngayHetBaoHanh = thietBi.ngay_het_bao_hanh;
     duLieu.baoHanh = dinhDangBaoHanh(thietBi);
+  }
+
+  if (vaiTro === VAI_TRO.QUAN_TRI_VIEN) {
+    duLieu.loNhap = dinhDangLoNhapTuDong(thietBi);
+    duLieu.giaMua = thietBi.gia_mua === null ? null : Number(thietBi.gia_mua);
   }
 
   return duLieu;

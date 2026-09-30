@@ -1,4 +1,4 @@
-const suCoService = require("../services/su_co.service");
+﻿const suCoService = require("../services/su_co.service");
 const {
   layDanhSachDuongDanAnh,
   xoaAnhDaTai
@@ -15,7 +15,7 @@ function chuanHoaBodyMultipart(req, tenTruongAnh) {
       try {
         body[tenTruong] = JSON.parse(body[tenTruong]);
       } catch {
-        // Service sẽ trả lỗi validation nhất quán cho dữ liệu không hợp lệ.
+        // Service sáº½ tráº£ lá»—i validation nháº¥t quÃ¡n cho dá»¯ liá»‡u khÃ´ng há»£p lá»‡.
       }
     }
   }
@@ -34,7 +34,7 @@ async function taoSuCo(req, res, next) {
 
     return res.status(201).json({
       thanhCong: true,
-      thongBao: "Tạo sự cố thành công",
+      thongBao: "Táº¡o sá»± cá»‘ thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -51,7 +51,7 @@ async function nhanCongViecKhanCap(req, res, next) {
     );
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Nhận công việc khẩn cấp thành công",
+      thongBao: "Nháº­n cÃ´ng viá»‡c kháº©n cáº¥p thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -68,7 +68,7 @@ async function layDanhSachSuCoCuaToi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy danh sách sự cố của tôi thành công",
+      thongBao: "Láº¥y danh sÃ¡ch sá»± cá»‘ cá»§a tÃ´i thÃ nh cÃ´ng",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -85,7 +85,7 @@ async function layChiTietSuCoCuaToi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy chi tiết sự cố của tôi thành công",
+      thongBao: "Láº¥y chi tiáº¿t sá»± cá»‘ cá»§a tÃ´i thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -99,7 +99,7 @@ async function layDanhSachSuCo(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy danh sách sự cố thành công",
+      thongBao: "Láº¥y danh sÃ¡ch sá»± cá»‘ thÃ nh cÃ´ng",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -113,7 +113,7 @@ async function layChiTietSuCo(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy chi tiết sự cố thành công",
+      thongBao: "Láº¥y chi tiáº¿t sá»± cá»‘ thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -127,7 +127,7 @@ async function layDanhSachKyThuatVien(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy danh sách kỹ thuật viên đang hoạt động thành công",
+      thongBao: "Láº¥y danh sÃ¡ch ká»¹ thuáº­t viÃªn Ä‘ang hoáº¡t Ä‘á»™ng thÃ nh cÃ´ng",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -144,7 +144,7 @@ async function phanCongKyThuatVien(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Phân công kỹ thuật viên thành công",
+      thongBao: "PhÃ¢n cÃ´ng ká»¹ thuáº­t viÃªn thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -161,7 +161,7 @@ async function layCongViecCuaToi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy danh sách công việc của tôi thành công",
+      thongBao: "Láº¥y danh sÃ¡ch cÃ´ng viá»‡c cá»§a tÃ´i thÃ nh cÃ´ng",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -178,7 +178,7 @@ async function layChiTietCongViecCuaToi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy chi tiết công việc của tôi thành công",
+      thongBao: "Láº¥y chi tiáº¿t cÃ´ng viá»‡c cá»§a tÃ´i thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -196,8 +196,8 @@ async function batDauXuLySuCo(req, res, next) {
     return res.status(200).json({
       thanhCong: true,
       thongBao: suCo.daBatDauTruocDo
-        ? "Sự cố đã ở trạng thái đang xử lý"
-        : "Bắt đầu xử lý sự cố thành công",
+        ? "Sá»± cá»‘ Ä‘Ã£ á»Ÿ tráº¡ng thÃ¡i Ä‘ang xá»­ lÃ½"
+        : "Báº¯t Ä‘áº§u xá»­ lÃ½ sá»± cá»‘ thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -215,7 +215,7 @@ async function capNhatHoSoSuaChua(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lưu hồ sơ sửa chữa thành công",
+      thongBao: "LÆ°u há»“ sÆ¡ sá»­a chá»¯a thÃ nh cÃ´ng",
       duLieu: hoSoSuaChua
     });
   } catch (loi) {
@@ -233,7 +233,7 @@ async function choLinhKien(req, res, next) {
     );
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Đã chuyển công việc sang chờ linh kiện",
+      thongBao: "ÄÃ£ chuyá»ƒn cÃ´ng viá»‡c sang chá» linh kiá»‡n",
       duLieu: suCo
     });
   } catch (loi) {
@@ -249,7 +249,7 @@ async function tiepTucXuLy(req, res, next) {
     );
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Tiếp tục xử lý công việc thành công",
+      thongBao: "Tiáº¿p tá»¥c xá»­ lÃ½ cÃ´ng viá»‡c thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
@@ -266,7 +266,7 @@ async function layHoSoSuaChuaCuaToi(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Lấy hồ sơ sửa chữa thành công",
+      thongBao: "Láº¥y há»“ sÆ¡ sá»­a chá»¯a thÃ nh cÃ´ng",
       duLieu: ketQua
     });
   } catch (loi) {
@@ -284,11 +284,28 @@ async function hoanThanhSuaChua(req, res, next) {
 
     return res.status(200).json({
       thanhCong: true,
-      thongBao: "Hoàn thành sửa chữa thành công",
+      thongBao: "HoÃ n thÃ nh sá»­a chá»¯a thÃ nh cÃ´ng",
       duLieu: suCo
     });
   } catch (loi) {
     await xoaAnhDaTai(req.files);
+    return next(loi);
+  }
+}
+
+async function xacNhanHoanThanhSuCo(req, res, next) {
+  try {
+    const suCo = await suCoService.xacNhanHoanThanhSuCo(
+      req.params.id,
+      req.nguoiDung
+    );
+
+    return res.status(200).json({
+      thanhCong: true,
+      thongBao: "Xác nhận thiết bị hoạt động thành công",
+      duLieu: suCo
+    });
+  } catch (loi) {
     return next(loi);
   }
 }
@@ -309,5 +326,6 @@ module.exports = {
   choLinhKien,
   tiepTucXuLy,
   layHoSoSuaChuaCuaToi,
-  hoanThanhSuaChua
+  hoanThanhSuaChua,
+  xacNhanHoanThanhSuCo
 };

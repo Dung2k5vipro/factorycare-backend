@@ -1,4 +1,4 @@
-const { pool } = require("../config/database");
+﻿const { pool } = require("../config/database");
 const TRANG_THAI_SU_CO = require("../constants/trang_thai_su_co");
 
 function layBoThucThi(connection) {
@@ -300,7 +300,7 @@ async function laySuCoDangMoTheoThietBi(thietBiId, connection = null) {
         thoi_gian_bao
       FROM su_co
       WHERE thiet_bi_id = ?
-        AND trang_thai IN (?, ?, ?, ?)
+        AND trang_thai IN (?, ?, ?, ?, ?)
       ORDER BY thoi_gian_bao DESC, id DESC
       LIMIT 10
     `,
@@ -309,7 +309,8 @@ async function laySuCoDangMoTheoThietBi(thietBiId, connection = null) {
       TRANG_THAI_SU_CO.MOI,
       TRANG_THAI_SU_CO.DA_PHAN_CONG,
       TRANG_THAI_SU_CO.DANG_XU_LY,
-      TRANG_THAI_SU_CO.CHO_LINH_KIEN
+      TRANG_THAI_SU_CO.CHO_LINH_KIEN,
+      TRANG_THAI_SU_CO.CHO_XAC_NHAN
     ]
   );
 
@@ -524,12 +525,46 @@ async function hoanThanhXuLy(
         AND trang_thai = ?
     `,
     [
-      TRANG_THAI_SU_CO.DA_XU_LY,
+      TRANG_THAI_SU_CO.CHO_XAC_NHAN,
       thoiGianHoanThanh,
       suCoId,
       kyThuatVienId,
       TRANG_THAI_SU_CO.DANG_XU_LY
     ]
+  );
+
+  return ketQua.affectedRows;
+}
+
+async function xacNhanHoanThanh(
+  connection,
+  suCoId,
+  nguoiDungId,
+  thoiGianHoanThanh,
+  laQuanTriVien = false
+) {
+  const cauDieuKienNguoiDung = laQuanTriVien ? '' : 'AND nguoi_bao_id = ?';
+  const thamSo = [
+    TRANG_THAI_SU_CO.DA_XU_LY,
+    thoiGianHoanThanh,
+    suCoId,
+    TRANG_THAI_SU_CO.CHO_XAC_NHAN
+  ];
+  if (!laQuanTriVien) {
+    thamSo.push(nguoiDungId);
+  }
+
+  const [ketQua] = await connection.execute(
+    `
+      UPDATE su_co
+      SET
+        trang_thai = ?,
+        thoi_gian_hoan_thanh = COALESCE(thoi_gian_hoan_thanh, ?)
+      WHERE id = ?
+        AND trang_thai = ?
+        ${cauDieuKienNguoiDung}
+    `,
+    thamSo
   );
 
   return ketQua.affectedRows;
@@ -546,7 +581,7 @@ async function demSuCoDangMoKhac(
       FROM su_co
       WHERE thiet_bi_id = ?
         AND id <> ?
-        AND trang_thai IN (?, ?, ?, ?)
+        AND trang_thai IN (?, ?, ?, ?, ?)
     `,
     [
       thietBiId,
@@ -554,7 +589,8 @@ async function demSuCoDangMoKhac(
       TRANG_THAI_SU_CO.MOI,
       TRANG_THAI_SU_CO.DA_PHAN_CONG,
       TRANG_THAI_SU_CO.DANG_XU_LY,
-      TRANG_THAI_SU_CO.CHO_LINH_KIEN
+      TRANG_THAI_SU_CO.CHO_LINH_KIEN,
+      TRANG_THAI_SU_CO.CHO_XAC_NHAN
     ]
   );
 
@@ -586,6 +622,7 @@ module.exports = {
   choLinhKien,
   tiepTucXuLy,
   hoanThanhXuLy,
+  xacNhanHoanThanh,
   demSuCoDangMoKhac,
   layThoiGianHienTai
 };

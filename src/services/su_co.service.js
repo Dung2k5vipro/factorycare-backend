@@ -1,4 +1,4 @@
-const { pool } = require("../config/database");
+﻿const { pool } = require("../config/database");
 const KET_QUA_SUA_CHUA = require("../constants/ket_qua_sua_chua");
 const LOAI_THONG_BAO = require("../constants/loai_thong_bao");
 const MUC_DO_SU_CO = require("../constants/muc_do_su_co");
@@ -52,13 +52,13 @@ function chuanHoaChuoi(giaTri) {
 
 function layChuoiBatBuoc(giaTri, tenTruong, doDaiToiDa) {
   if (typeof giaTri !== "string" || giaTri.trim() === "") {
-    throw taoLoi(`${tenTruong} không được để trống`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng`, 400);
   }
 
   const giaTriChuanHoa = giaTri.trim();
 
   if (giaTriChuanHoa.length > doDaiToiDa) {
-    throw taoLoi(`${tenTruong} không được vượt quá ${doDaiToiDa} ký tự`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ ${doDaiToiDa} kÃ½ tá»±`, 400);
   }
 
   return giaTriChuanHoa;
@@ -74,13 +74,13 @@ function layChuoiTuyChon(giaTri, tenTruong, doDaiToiDa) {
   }
 
   if (typeof giaTri !== "string") {
-    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng há»£p lá»‡`, 400);
   }
 
   const giaTriChuanHoa = giaTri.trim();
 
   if (giaTriChuanHoa.length > doDaiToiDa) {
-    throw taoLoi(`${tenTruong} không được vượt quá ${doDaiToiDa} ký tự`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ ${doDaiToiDa} kÃ½ tá»±`, 400);
   }
 
   return giaTriChuanHoa;
@@ -90,7 +90,7 @@ function layIdHopLe(id, tenDoiTuong) {
   const idDaChuyen = Number(id);
 
   if (!Number.isInteger(idDaChuyen) || idDaChuyen <= 0) {
-    throw taoLoi(`${tenDoiTuong} không hợp lệ`, 400);
+    throw taoLoi(`${tenDoiTuong} khÃ´ng há»£p lá»‡`, 400);
   }
 
   return idDaChuyen;
@@ -109,7 +109,7 @@ function layGiaTriEnum(giaTri, danhSachHopLe, tenTruong, batBuoc = false) {
 
   if (!giaTriChuanHoa) {
     if (batBuoc) {
-      throw taoLoi(`${tenTruong} không được để trống`, 400);
+      throw taoLoi(`${tenTruong} khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng`, 400);
     }
 
     return null;
@@ -118,7 +118,7 @@ function layGiaTriEnum(giaTri, danhSachHopLe, tenTruong, batBuoc = false) {
   const giaTriVietHoa = giaTriChuanHoa.toUpperCase();
 
   if (!danhSachHopLe.includes(giaTriVietHoa)) {
-    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng há»£p lá»‡`, 400);
   }
 
   return giaTriVietHoa;
@@ -128,7 +128,7 @@ function layMucDo(giaTri, batBuoc = false) {
   return layGiaTriEnum(
     giaTri,
     Object.values(MUC_DO_SU_CO),
-    "Mức độ sự cố",
+    "Má»©c Ä‘á»™ sá»± cá»‘",
     batBuoc
   );
 }
@@ -137,7 +137,7 @@ function layTrangThai(giaTri) {
   return layGiaTriEnum(
     giaTri,
     Object.values(TRANG_THAI_SU_CO),
-    "Trạng thái sự cố"
+    "Tráº¡ng thÃ¡i sá»± cá»‘"
   );
 }
 
@@ -145,7 +145,7 @@ function layKetQuaSuaChua(giaTri, batBuoc = false) {
   return layGiaTriEnum(
     giaTri,
     Object.values(KET_QUA_SUA_CHUA),
-    "Kết quả sửa chữa",
+    "Káº¿t quáº£ sá»­a chá»¯a",
     batBuoc
   );
 }
@@ -160,38 +160,38 @@ function layDanhSachLinhKienThayThe(giaTri) {
   }
 
   if (!Array.isArray(giaTri)) {
-    throw taoLoi("Linh kiện thay thế phải là một mảng", 400);
+    throw taoLoi("Linh kiá»‡n thay tháº¿ pháº£i lÃ  má»™t máº£ng", 400);
   }
 
   if (giaTri.length > SO_LINH_KIEN_TOI_DA) {
-    throw taoLoi(`Chỉ được ghi tối đa ${SO_LINH_KIEN_TOI_DA} linh kiện`, 400);
+    throw taoLoi(`Chá»‰ Ä‘Æ°á»£c ghi tá»‘i Ä‘a ${SO_LINH_KIEN_TOI_DA} linh kiá»‡n`, 400);
   }
 
   const danhSachLinhKien = giaTri.map((linhKien, viTri) => {
     if (!linhKien || typeof linhKien !== "object" || Array.isArray(linhKien)) {
-      throw taoLoi(`Linh kiện tại vị trí ${viTri + 1} không hợp lệ`, 400);
+      throw taoLoi(`Linh kiá»‡n táº¡i vá»‹ trÃ­ ${viTri + 1} khÃ´ng há»£p lá»‡`, 400);
     }
 
     const tenLinhKien = layChuoiBatBuoc(
       layGiaTriTheoNhieuTen(linhKien, ["tenLinhKien", "ten"]),
-      `Tên linh kiện tại vị trí ${viTri + 1}`,
+      `TÃªn linh kiá»‡n táº¡i vá»‹ trÃ­ ${viTri + 1}`,
       DO_DAI_TEN_LINH_KIEN_TOI_DA
     );
     const soLuongRaw = layGiaTriTheoNhieuTen(linhKien, ["soLuong", "so_luong"]);
     const soLuong = Number(soLuongRaw);
 
     if (!Number.isFinite(soLuong) || soLuong <= 0) {
-      throw taoLoi(`Số lượng linh kiện tại vị trí ${viTri + 1} phải lớn hơn 0`, 400);
+      throw taoLoi(`Sá»‘ lÆ°á»£ng linh kiá»‡n táº¡i vá»‹ trÃ­ ${viTri + 1} pháº£i lá»›n hÆ¡n 0`, 400);
     }
 
     const donVi = layChuoiTuyChon(
       layGiaTriTheoNhieuTen(linhKien, ["donVi", "don_vi"]),
-      `Đơn vị linh kiện tại vị trí ${viTri + 1}`,
+      `ÄÆ¡n vá»‹ linh kiá»‡n táº¡i vá»‹ trÃ­ ${viTri + 1}`,
       50
     );
     const ghiChu = layChuoiTuyChon(
       layGiaTriTheoNhieuTen(linhKien, ["ghiChu", "ghi_chu"]),
-      `Ghi chú linh kiện tại vị trí ${viTri + 1}`,
+      `Ghi chÃº linh kiá»‡n táº¡i vá»‹ trÃ­ ${viTri + 1}`,
       500
     );
 
@@ -218,25 +218,25 @@ function kiemTraKhongGuiTruongHeThongSuaChua(duLieu = {}) {
   );
 
   if (coTruongHeThong) {
-    throw taoLoi("Không được tự thiết lập sự cố, kỹ thuật viên hoặc thời gian sửa chữa", 400);
+    throw taoLoi("KhÃ´ng Ä‘Æ°á»£c tá»± thiáº¿t láº­p sá»± cá»‘, ká»¹ thuáº­t viÃªn hoáº·c thá»i gian sá»­a chá»¯a", 400);
   }
 }
 
 function layDuLieuSuaChuaTuBody(duLieu = {}) {
   if (!duLieu || typeof duLieu !== "object" || Array.isArray(duLieu)) {
-    throw taoLoi("Dữ liệu sửa chữa không hợp lệ", 400);
+    throw taoLoi("Dá»¯ liá»‡u sá»­a chá»¯a khÃ´ng há»£p lá»‡", 400);
   }
 
   kiemTraKhongGuiTruongHeThongSuaChua(duLieu);
 
   const nguyenNhan = layChuoiTuyChon(
     layGiaTriTheoNhieuTen(duLieu, ["nguyenNhan", "nguyen_nhan"]),
-    "Nguyên nhân",
+    "NguyÃªn nhÃ¢n",
     DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
   );
   const cachXuLy = layChuoiTuyChon(
     layGiaTriTheoNhieuTen(duLieu, ["cachXuLy", "cach_xu_ly"]),
-    "Cách xử lý",
+    "CÃ¡ch xá»­ lÃ½",
     DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
   );
   const ketQuaRaw = layGiaTriTheoNhieuTen(duLieu, ["ketQua", "ket_qua"]);
@@ -248,7 +248,7 @@ function layDuLieuSuaChuaTuBody(duLieu = {}) {
   );
   const ghiChu = layChuoiTuyChon(
     layGiaTriTheoNhieuTen(duLieu, ["ghiChu", "ghi_chu"]),
-    "Ghi chú",
+    "Ghi chÃº",
     DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
   );
   const hinhAnhSuaChua = layDanhSachHinhAnh(
@@ -273,7 +273,7 @@ function layNgayLocTuyChon(giaTri, tenTruong) {
   }
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) {
-    throw taoLoi(`${tenTruong} phải có định dạng YYYY-MM-DD`, 400);
+    throw taoLoi(`${tenTruong} pháº£i cÃ³ Ä‘á»‹nh dáº¡ng YYYY-MM-DD`, 400);
   }
 
   const [nam, thang, ngayTrongThang] = ngay.split("-").map(Number);
@@ -284,7 +284,7 @@ function layNgayLocTuyChon(giaTri, tenTruong) {
     ngayKiemTra.getUTCDate() === ngayTrongThang;
 
   if (!laNgayHopLe) {
-    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng há»£p lá»‡`, 400);
   }
 
   return ngay;
@@ -300,7 +300,7 @@ function layThoiGianTuyChon(giaTri, tenTruong) {
   const bieuThucThoiGian = /^\d{4}-\d{2}-\d{2}(?:[T ](?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})?)?$/;
 
   if (!bieuThucThoiGian.test(thoiGian)) {
-    throw taoLoi(`${tenTruong} phải có định dạng ngày giờ ISO hợp lệ`, 400);
+    throw taoLoi(`${tenTruong} pháº£i cÃ³ Ä‘á»‹nh dáº¡ng ngÃ y giá» ISO há»£p lá»‡`, 400);
   }
 
   const [nam, thang, ngayTrongThang] = thoiGian
@@ -314,13 +314,13 @@ function layThoiGianTuyChon(giaTri, tenTruong) {
     ngayKiemTra.getUTCMonth() !== thang - 1 ||
     ngayKiemTra.getUTCDate() !== ngayTrongThang
   ) {
-    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng há»£p lá»‡`, 400);
   }
 
   const ngayGio = new Date(thoiGian);
 
   if (Number.isNaN(ngayGio.getTime())) {
-    throw taoLoi(`${tenTruong} không hợp lệ`, 400);
+    throw taoLoi(`${tenTruong} khÃ´ng há»£p lá»‡`, 400);
   }
 
   return ngayGio;
@@ -336,22 +336,22 @@ function layDanhSachHinhAnh(giaTri) {
   }
 
   if (!Array.isArray(giaTri)) {
-    throw taoLoi("Hình ảnh phải là một mảng đường dẫn", 400);
+    throw taoLoi("HÃ¬nh áº£nh pháº£i lÃ  má»™t máº£ng Ä‘Æ°á»ng dáº«n", 400);
   }
 
   if (giaTri.length > SO_ANH_TOI_DA) {
-    throw taoLoi(`Chỉ được gửi tối đa ${SO_ANH_TOI_DA} hình ảnh`, 400);
+    throw taoLoi(`Chá»‰ Ä‘Æ°á»£c gá»­i tá»‘i Ä‘a ${SO_ANH_TOI_DA} hÃ¬nh áº£nh`, 400);
   }
 
   const danhSachHinhAnh = giaTri.map((duongDan, viTri) => {
     if (typeof duongDan !== "string" || duongDan.trim() === "") {
-      throw taoLoi(`Hình ảnh tại vị trí ${viTri + 1} không hợp lệ`, 400);
+      throw taoLoi(`HÃ¬nh áº£nh táº¡i vá»‹ trÃ­ ${viTri + 1} khÃ´ng há»£p lá»‡`, 400);
     }
 
     const duongDanChuanHoa = duongDan.trim();
 
     if (duongDanChuanHoa.length > DO_DAI_DUONG_DAN_ANH_TOI_DA) {
-      throw taoLoi(`Đường dẫn hình ảnh tại vị trí ${viTri + 1} quá dài`, 400);
+      throw taoLoi(`ÄÆ°á»ng dáº«n hÃ¬nh áº£nh táº¡i vá»‹ trÃ­ ${viTri + 1} quÃ¡ dÃ i`, 400);
     }
 
     return duongDanChuanHoa;
@@ -382,7 +382,7 @@ function kiemTraKhongGuiTruongHeThong(duLieu = {}) {
   );
 
   if (coTruongHeThong) {
-    throw taoLoi("Không được tự thiết lập mã, người báo hoặc trạng thái sự cố", 400);
+    throw taoLoi("KhÃ´ng Ä‘Æ°á»£c tá»± thiáº¿t láº­p mÃ£, ngÆ°á»i bÃ¡o hoáº·c tráº¡ng thÃ¡i sá»± cá»‘", 400);
   }
 }
 
@@ -395,7 +395,7 @@ function layThongTinPhanTrang(query = {}) {
   );
 
   if (!Number.isInteger(trangHienTai) || trangHienTai < 1) {
-    throw taoLoi("Trang không hợp lệ", 400);
+    throw taoLoi("Trang khÃ´ng há»£p lá»‡", 400);
   }
 
   if (
@@ -403,7 +403,7 @@ function layThongTinPhanTrang(query = {}) {
     soBanGhiMoiTrang < 1 ||
     soBanGhiMoiTrang > 100
   ) {
-    throw taoLoi("Giới hạn phải là số nguyên từ 1 đến 100", 400);
+    throw taoLoi("Giá»›i háº¡n pháº£i lÃ  sá»‘ nguyÃªn tá»« 1 Ä‘áº¿n 100", 400);
   }
 
   return {
@@ -417,13 +417,13 @@ function layDieuKienLoc(query = {}) {
   const tuKhoaRaw = layGiaTriTheoNhieuTen(query, ["tuKhoa", "tu_khoa", "keyword"]);
 
   if (tuKhoaRaw !== undefined && typeof tuKhoaRaw !== "string") {
-    throw taoLoi("Từ khóa không hợp lệ", 400);
+    throw taoLoi("Tá»« khÃ³a khÃ´ng há»£p lá»‡", 400);
   }
 
   const tuKhoa = chuanHoaChuoi(tuKhoaRaw) || "";
 
   if (tuKhoa.length > DO_DAI_TU_KHOA_TOI_DA) {
-    throw taoLoi(`Từ khóa không được vượt quá ${DO_DAI_TU_KHOA_TOI_DA} ký tự`, 400);
+    throw taoLoi(`Tá»« khÃ³a khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ ${DO_DAI_TU_KHOA_TOI_DA} kÃ½ tá»±`, 400);
   }
 
   const mucDo = layMucDo(
@@ -434,23 +434,23 @@ function layDieuKienLoc(query = {}) {
   );
   const thietBiId = layIdTuyChon(
     layGiaTriTheoNhieuTen(query, ["thietBiId", "thiet_bi_id"]),
-    "Thiết bị"
+    "Thiáº¿t bá»‹"
   );
   const kyThuatVienId = layIdTuyChon(
     layGiaTriTheoNhieuTen(query, ["kyThuatVienId", "ky_thuat_vien_id"]),
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   const tuNgay = layNgayLocTuyChon(
     layGiaTriTheoNhieuTen(query, ["tuNgay", "tu_ngay"]),
-    "Từ ngày"
+    "Tá»« ngÃ y"
   );
   const denNgay = layNgayLocTuyChon(
     layGiaTriTheoNhieuTen(query, ["denNgay", "den_ngay"]),
-    "Đến ngày"
+    "Äáº¿n ngÃ y"
   );
 
   if (tuNgay && denNgay && tuNgay > denNgay) {
-    throw taoLoi("Từ ngày không được lớn hơn đến ngày", 400);
+    throw taoLoi("Tá»« ngÃ y khÃ´ng Ä‘Æ°á»£c lá»›n hÆ¡n Ä‘áº¿n ngÃ y", 400);
   }
 
   return {
@@ -520,12 +520,12 @@ function hopNhatDuLieuSuaChua(
   if (batBuocHoanThanh) {
     duLieuDaHopNhat.nguyenNhan = layChuoiBatBuoc(
       duLieuDaHopNhat.nguyenNhan,
-      "Nguyên nhân",
+      "NguyÃªn nhÃ¢n",
       DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
     );
     duLieuDaHopNhat.cachXuLy = layChuoiBatBuoc(
       duLieuDaHopNhat.cachXuLy,
-      "Cách xử lý",
+      "CÃ¡ch xá»­ lÃ½",
       DO_DAI_NOI_DUNG_SUA_CHUA_TOI_DA
     );
     duLieuDaHopNhat.ketQua = layKetQuaSuaChua(
@@ -608,7 +608,7 @@ function kiemTraKyThuatVienXuLyHopLe(
   kyThuatVien
 ) {
   if (Number(suCo.ky_thuat_vien_id) !== kyThuatVienId) {
-    throw taoLoi("Bạn không được phân công xử lý sự cố này", 403);
+    throw taoLoi("Báº¡n khÃ´ng Ä‘Æ°á»£c phÃ¢n cÃ´ng xá»­ lÃ½ sá»± cá»‘ nÃ y", 403);
   }
 
   if (
@@ -616,7 +616,7 @@ function kiemTraKyThuatVienXuLyHopLe(
     kyThuatVien.vai_tro !== VAI_TRO.KY_THUAT_VIEN ||
     kyThuatVien.trang_thai !== TRANG_THAI_NGUOI_DUNG.HOAT_DONG
   ) {
-    throw taoLoi("Tài khoản kỹ thuật viên không hợp lệ hoặc đã ngừng hoạt động", 403);
+    throw taoLoi("TÃ i khoáº£n ká»¹ thuáº­t viÃªn khÃ´ng há»£p lá»‡ hoáº·c Ä‘Ã£ ngá»«ng hoáº¡t Ä‘á»™ng", 403);
   }
 }
 
@@ -792,23 +792,23 @@ async function moKhoaSinhMaAnToan(connection, tenKhoa) {
 
 function layDuLieuTaoSuCo(duLieu = {}) {
   if (!duLieu || typeof duLieu !== "object" || Array.isArray(duLieu)) {
-    throw taoLoi("Dữ liệu sự cố không hợp lệ", 400);
+    throw taoLoi("Dá»¯ liá»‡u sá»± cá»‘ khÃ´ng há»£p lá»‡", 400);
   }
 
   kiemTraKhongGuiTruongHeThong(duLieu);
 
   const thietBiId = layIdHopLe(
     layGiaTriTheoNhieuTen(duLieu, ["thietBiId", "thiet_bi_id"]),
-    "Thiết bị"
+    "Thiáº¿t bá»‹"
   );
   const tieuDe = layChuoiBatBuoc(
     layGiaTriTheoNhieuTen(duLieu, ["tieuDe", "tieu_de"]),
-    "Tiêu đề",
+    "TiÃªu Ä‘á»",
     DO_DAI_TIEU_DE_TOI_DA
   );
   const moTa = layChuoiBatBuoc(
     layGiaTriTheoNhieuTen(duLieu, ["moTa", "mo_ta"]),
-    "Mô tả",
+    "MÃ´ táº£",
     DO_DAI_MO_TA_TOI_DA
   );
   const mucDo = layMucDo(
@@ -817,7 +817,7 @@ function layDuLieuTaoSuCo(duLieu = {}) {
   );
   const thoiGianXayRa = layThoiGianTuyChon(
     layGiaTriTheoNhieuTen(duLieu, ["thoiGianXayRa", "thoi_gian_xay_ra"]),
-    "Thời gian xảy ra"
+    "Thá»i gian xáº£y ra"
   );
   const danhSachHinhAnh = layDanhSachHinhAnh(
     layGiaTriTheoNhieuTen(duLieu, ["hinhAnh", "hinh_anh"])
@@ -849,8 +849,8 @@ async function taoThongBaoSuCoNghiemTrong(
   for (const quanTriVien of danhSachQuanTriVien) {
     await thongBaoModel.taoThongBao({
       nguoiDungId: quanTriVien.id,
-      tieuDe: `Sự cố nghiêm trọng ${maSuCo}`,
-      noiDung: `Thiết bị ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vừa được báo sự cố nghiêm trọng: ${tieuDe}.`,
+      tieuDe: `Sá»± cá»‘ nghiÃªm trá»ng ${maSuCo}`,
+      noiDung: `Thiáº¿t bá»‹ ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vá»«a Ä‘Æ°á»£c bÃ¡o sá»± cá»‘ nghiÃªm trá»ng: ${tieuDe}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -865,8 +865,8 @@ async function taoThongBaoSuCoNghiemTrong(
   for (const kyThuatVien of danhSachKyThuatVien) {
     await thongBaoModel.taoThongBao({
       nguoiDungId: kyThuatVien.id,
-      tieuDe: `Khẩn cấp ${maSuCo}`,
-      noiDung: `Thiết bị ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vừa phát sinh sự cố khẩn cấp: ${tieuDe}.`,
+      tieuDe: `Kháº©n cáº¥p ${maSuCo}`,
+      noiDung: `Thiáº¿t bá»‹ ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vá»«a phÃ¡t sinh sá»± cá»‘ kháº©n cáº¥p: ${tieuDe}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -874,7 +874,7 @@ async function taoThongBaoSuCoNghiemTrong(
 }
 
 async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
-  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "Người báo");
+  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "NgÆ°á»i bÃ¡o");
   const duLieuHopLe = layDuLieuTaoSuCo(duLieu);
   const tienTo = layTienToMaSuCo();
   const tenKhoa = taoTenKhoaSinhMa(tienTo);
@@ -887,7 +887,7 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
     daKhoa = await suCoModel.khoaSinhMaSuCo(connection, tenKhoa);
 
     if (!daKhoa) {
-      throw taoLoi("Không thể sinh mã sự cố, vui lòng thử lại", 409);
+      throw taoLoi("KhÃ´ng thá»ƒ sinh mÃ£ sá»± cá»‘, vui lÃ²ng thá»­ láº¡i", 409);
     }
 
     await connection.beginTransaction();
@@ -903,7 +903,7 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
       nguoiBao.vai_tro !== VAI_TRO.NHAN_VIEN ||
       nguoiBao.trang_thai !== TRANG_THAI_NGUOI_DUNG.HOAT_DONG
     ) {
-      throw taoLoi("Người báo sự cố không hợp lệ hoặc đã ngừng hoạt động", 403);
+      throw taoLoi("NgÆ°á»i bÃ¡o sá»± cá»‘ khÃ´ng há»£p lá»‡ hoáº·c Ä‘Ã£ ngá»«ng hoáº¡t Ä‘á»™ng", 403);
     }
 
     const thietBi = await thietBiModel.timTheoIdDeCapNhat(
@@ -912,11 +912,11 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
     );
 
     if (!thietBi) {
-      throw taoLoi("Không tìm thấy thiết bị", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y thiáº¿t bá»‹", 404);
     }
 
     if (thietBi.trang_thai === TRANG_THAI_THIET_BI.THANH_LY) {
-      throw taoLoi("Không thể báo sự cố cho thiết bị đã thanh lý", 409);
+      throw taoLoi("KhÃ´ng thá»ƒ bÃ¡o sá»± cá»‘ cho thiáº¿t bá»‹ Ä‘Ã£ thanh lÃ½", 409);
     }
 
     const danhSachSuCoDangMo = await suCoModel.laySuCoDangMoTheoThietBi(
@@ -940,6 +940,14 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
       thoiGianXayRa: duLieuHopLe.thoiGianXayRa
     });
 
+    if (thietBi.trang_thai !== TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG) {
+      await thietBiModel.capNhatTrangThai(
+        thietBi.id,
+        TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG,
+        connection
+      );
+    }
+
     if (duLieuHopLe.mucDo === MUC_DO_SU_CO.NGHIEM_TRONG) {
       await taoThongBaoSuCoNghiemTrong(
         connection,
@@ -962,7 +970,7 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
     if (danhSachSuCoDangMo.length > 0) {
       ketQua.canhBao = {
         coSuCoDangMo: true,
-        thongBao: "Thiết bị đang có sự cố chưa đóng; sự cố mới vẫn được ghi nhận để tránh mất báo cáo.",
+        thongBao: "Thiáº¿t bá»‹ Ä‘ang cÃ³ sá»± cá»‘ chÆ°a Ä‘Ã³ng; sá»± cá»‘ má»›i váº«n Ä‘Æ°á»£c ghi nháº­n Ä‘á»ƒ trÃ¡nh máº¥t bÃ¡o cÃ¡o.",
         danhSachSuCo: danhSachSuCoDangMo.map((suCo) => ({
           id: suCo.id,
           maSuCo: suCo.ma_su_co,
@@ -981,7 +989,7 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
     }
 
     if (loi.code === "ER_DUP_ENTRY") {
-      throw taoLoi("Mã sự cố đã tồn tại, vui lòng thử lại", 409);
+      throw taoLoi("MÃ£ sá»± cá»‘ Ä‘Ã£ tá»“n táº¡i, vui lÃ²ng thá»­ láº¡i", 409);
     }
 
     throw loi;
@@ -1021,7 +1029,7 @@ async function layKetQuaDanhSach(dieuKienLoc, thongTinPhanTrang, tuyChonDinhDang
 }
 
 async function layDanhSachSuCoCuaToi(query = {}, nguoiDungHienTai = {}) {
-  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "Người báo");
+  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "NgÆ°á»i bÃ¡o");
   const dieuKienLoc = {
     ...layDieuKienLoc(query),
     nguoiBaoId,
@@ -1036,16 +1044,16 @@ async function layDanhSachSuCoCuaToi(query = {}, nguoiDungHienTai = {}) {
 }
 
 async function layChiTietSuCoCuaToi(id, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
-  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "Người báo");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
+  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "NgÆ°á»i bÃ¡o");
   const suCo = await suCoModel.timTheoId(suCoId);
 
   if (!suCo) {
-    throw taoLoi("Không tìm thấy sự cố", 404);
+    throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
   }
 
   if (Number(suCo.nguoi_bao_id) !== nguoiBaoId) {
-    throw taoLoi("Bạn không có quyền xem sự cố này", 403);
+    throw taoLoi("Báº¡n khÃ´ng cÃ³ quyá»n xem sá»± cá»‘ nÃ y", 403);
   }
 
   const danhSachHoSo = await hoSoSuaChuaModel.layDanhSachTheoSuCoId(suCoId);
@@ -1073,11 +1081,11 @@ async function layDanhSachSuCo(query = {}) {
 }
 
 async function layChiTietSuCo(id) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const suCo = await suCoModel.timTheoId(suCoId);
 
   if (!suCo) {
-    throw taoLoi("Không tìm thấy sự cố", 404);
+    throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
   }
 
   const danhSachHoSo = await hoSoSuaChuaModel.layDanhSachTheoSuCoId(suCoId);
@@ -1098,13 +1106,13 @@ async function layDanhSachKyThuatVien(query = {}) {
   const tuKhoaRaw = layGiaTriTheoNhieuTen(query, ["tuKhoa", "tu_khoa", "keyword"]);
 
   if (tuKhoaRaw !== undefined && typeof tuKhoaRaw !== "string") {
-    throw taoLoi("Từ khóa không hợp lệ", 400);
+    throw taoLoi("Tá»« khÃ³a khÃ´ng há»£p lá»‡", 400);
   }
 
   const tuKhoa = chuanHoaChuoi(tuKhoaRaw) || "";
 
   if (tuKhoa.length > DO_DAI_TU_KHOA_TOI_DA) {
-    throw taoLoi(`Từ khóa không được vượt quá ${DO_DAI_TU_KHOA_TOI_DA} ký tự`, 400);
+    throw taoLoi(`Tá»« khÃ³a khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ ${DO_DAI_TU_KHOA_TOI_DA} kÃ½ tá»±`, 400);
   }
 
   const dieuKienLoc = {
@@ -1133,10 +1141,10 @@ async function layDanhSachKyThuatVien(query = {}) {
 }
 
 async function phanCongKyThuatVien(id, duLieu = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const kyThuatVienId = layIdHopLe(
     layGiaTriTheoNhieuTen(duLieu, ["kyThuatVienId", "ky_thuat_vien_id"]),
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   let connection;
   let daBatDauTransaction = false;
@@ -1150,14 +1158,14 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
     const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
 
     if (!suCo) {
-      throw taoLoi("Không tìm thấy sự cố", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     }
 
     if (
       suCo.trang_thai !== TRANG_THAI_SU_CO.MOI &&
       suCo.trang_thai !== TRANG_THAI_SU_CO.DA_PHAN_CONG
     ) {
-      throw taoLoi("Chỉ có thể phân công sự cố mới hoặc sự cố đã phân công", 409);
+      throw taoLoi("Chá»‰ cÃ³ thá»ƒ phÃ¢n cÃ´ng sá»± cá»‘ má»›i hoáº·c sá»± cá»‘ Ä‘Ã£ phÃ¢n cÃ´ng", 409);
     }
 
     const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
@@ -1166,19 +1174,19 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
     );
 
     if (!kyThuatVien) {
-      throw taoLoi("Không tìm thấy kỹ thuật viên", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y ká»¹ thuáº­t viÃªn", 404);
     }
 
     if (kyThuatVien.vai_tro !== VAI_TRO.KY_THUAT_VIEN) {
-      throw taoLoi("Người dùng được chọn không phải kỹ thuật viên", 400);
+      throw taoLoi("NgÆ°á»i dÃ¹ng Ä‘Æ°á»£c chá»n khÃ´ng pháº£i ká»¹ thuáº­t viÃªn", 400);
     }
 
     if (kyThuatVien.trang_thai !== TRANG_THAI_NGUOI_DUNG.HOAT_DONG) {
-      throw taoLoi("Không thể phân công kỹ thuật viên đã ngừng hoạt động", 409);
+      throw taoLoi("KhÃ´ng thá»ƒ phÃ¢n cÃ´ng ká»¹ thuáº­t viÃªn Ä‘Ã£ ngá»«ng hoáº¡t Ä‘á»™ng", 409);
     }
 
     if (Number(suCo.ky_thuat_vien_id) === kyThuatVienId) {
-      throw taoLoi("Sự cố đã được phân công cho kỹ thuật viên này", 409);
+      throw taoLoi("Sá»± cá»‘ Ä‘Ã£ Ä‘Æ°á»£c phÃ¢n cÃ´ng cho ká»¹ thuáº­t viÃªn nÃ y", 409);
     }
 
     kyThuatVienCuId = suCo.ky_thuat_vien_id;
@@ -1189,13 +1197,13 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
     );
 
     if (soBanGhiDaCapNhat !== 1) {
-      throw taoLoi("Trạng thái sự cố đã thay đổi, vui lòng tải lại dữ liệu", 409);
+      throw taoLoi("Tráº¡ng thÃ¡i sá»± cá»‘ Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i dá»¯ liá»‡u", 409);
     }
 
     await thongBaoModel.taoThongBao({
       nguoiDungId: kyThuatVienId,
-      tieuDe: `Phân công sự cố ${suCo.ma_su_co}`,
-      noiDung: `Bạn vừa được phân công xử lý sự cố ${suCo.ma_su_co}: ${suCo.tieu_de}.`,
+      tieuDe: `PhÃ¢n cÃ´ng sá»± cá»‘ ${suCo.ma_su_co}`,
+      noiDung: `Báº¡n vá»«a Ä‘Æ°á»£c phÃ¢n cÃ´ng xá»­ lÃ½ sá»± cá»‘ ${suCo.ma_su_co}: ${suCo.tieu_de}.`,
       loaiThongBao: LOAI_THONG_BAO.PHAN_CONG,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -1203,8 +1211,8 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
     if (kyThuatVienCuId) {
       await thongBaoModel.taoThongBao({
         nguoiDungId: kyThuatVienCuId,
-        tieuDe: `Thay đổi phân công sự cố ${suCo.ma_su_co}`,
-        noiDung: `Sự cố ${suCo.ma_su_co} đã được quản trị viên phân công lại cho kỹ thuật viên khác.`,
+        tieuDe: `Thay Ä‘á»•i phÃ¢n cÃ´ng sá»± cá»‘ ${suCo.ma_su_co}`,
+        noiDung: `Sá»± cá»‘ ${suCo.ma_su_co} Ä‘Ã£ Ä‘Æ°á»£c quáº£n trá»‹ viÃªn phÃ¢n cÃ´ng láº¡i cho ká»¹ thuáº­t viÃªn khÃ¡c.`,
         loaiThongBao: LOAI_THONG_BAO.PHAN_CONG,
         doiTuongLienQuanId: suCoId
       }, connection);
@@ -1238,7 +1246,7 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
 async function layCongViecCuaToi(query = {}, nguoiDungHienTai = {}) {
   const kyThuatVienId = layIdHopLe(
     nguoiDungHienTai.id,
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   const dieuKienLoc = {
     ...layDieuKienLoc(query),
@@ -1255,15 +1263,15 @@ async function layCongViecCuaToi(query = {}, nguoiDungHienTai = {}) {
 }
 
 async function layChiTietCongViecCuaToi(id, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const kyThuatVienId = layIdHopLe(
     nguoiDungHienTai.id,
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   const suCo = await suCoModel.timTheoId(suCoId);
 
   if (!suCo) {
-    throw taoLoi("Không tìm thấy sự cố", 404);
+    throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
   }
 
   const laKhanCapChuaCoNguoiNhan =
@@ -1275,7 +1283,7 @@ async function layChiTietCongViecCuaToi(id, nguoiDungHienTai = {}) {
     Number(suCo.ky_thuat_vien_id) !== kyThuatVienId &&
     !laKhanCapChuaCoNguoiNhan
   ) {
-    throw taoLoi("Bạn không có quyền xem công việc này", 403);
+    throw taoLoi("Báº¡n khÃ´ng cÃ³ quyá»n xem cÃ´ng viá»‡c nÃ y", 403);
   }
 
   const danhSachHoSo = laKhanCapChuaCoNguoiNhan
@@ -1299,7 +1307,7 @@ async function layChiTietCongViecCuaToi(id, nguoiDungHienTai = {}) {
 
 function layTrangThaiThietBiKhiBatDau(thietBi) {
   if (thietBi.trang_thai === TRANG_THAI_THIET_BI.THANH_LY) {
-    throw taoLoi("Không thể xử lý sự cố của thiết bị đã thanh lý", 409);
+    throw taoLoi("KhÃ´ng thá»ƒ xá»­ lÃ½ sá»± cá»‘ cá»§a thiáº¿t bá»‹ Ä‘Ã£ thanh lÃ½", 409);
   }
 
   if (thietBi.trang_thai === TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG) {
@@ -1316,7 +1324,7 @@ async function layTrangThaiThietBiKhiHoanThanh(
   ketQuaSuaChua
 ) {
   if (thietBi.trang_thai === TRANG_THAI_THIET_BI.THANH_LY) {
-    throw taoLoi("Không thể hoàn thành sửa chữa cho thiết bị đã thanh lý", 409);
+    throw taoLoi("KhÃ´ng thá»ƒ hoÃ n thÃ nh sá»­a chá»¯a cho thiáº¿t bá»‹ Ä‘Ã£ thanh lÃ½", 409);
   }
 
   if (thietBi.trang_thai === TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG) {
@@ -1364,8 +1372,8 @@ async function layChiTietCongViecKemHoSo(
 }
 
 async function nhanCongViecKhanCap(id, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
-  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Kỹ thuật viên");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
+  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Ká»¹ thuáº­t viÃªn");
   let connection;
   let daBatDauTransaction = false;
 
@@ -1380,22 +1388,22 @@ async function nhanCongViecKhanCap(id, nguoiDungHienTai = {}) {
       connection
     );
 
-    if (!suCo) throw taoLoi("Không tìm thấy sự cố", 404);
+    if (!suCo) throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     if (
       !kyThuatVien ||
       kyThuatVien.vai_tro !== VAI_TRO.KY_THUAT_VIEN ||
       kyThuatVien.trang_thai !== TRANG_THAI_NGUOI_DUNG.HOAT_DONG
     ) {
-      throw taoLoi("Tài khoản kỹ thuật viên không hợp lệ", 403);
+      throw taoLoi("TÃ i khoáº£n ká»¹ thuáº­t viÃªn khÃ´ng há»£p lá»‡", 403);
     }
     if (suCo.muc_do !== MUC_DO_SU_CO.NGHIEM_TRONG) {
-      throw taoLoi("Chỉ có thể nhận trực tiếp sự cố khẩn cấp", 409);
+      throw taoLoi("Chá»‰ cÃ³ thá»ƒ nháº­n trá»±c tiáº¿p sá»± cá»‘ kháº©n cáº¥p", 409);
     }
     if (suCo.ky_thuat_vien_id) {
-      throw taoLoi("Công việc đã có kỹ thuật viên nhận", 409);
+      throw taoLoi("CÃ´ng viá»‡c Ä‘Ã£ cÃ³ ká»¹ thuáº­t viÃªn nháº­n", 409);
     }
     if (suCo.trang_thai !== TRANG_THAI_SU_CO.MOI) {
-      throw taoLoi("Trạng thái công việc đã thay đổi, vui lòng tải lại", 409);
+      throw taoLoi("Tráº¡ng thÃ¡i cÃ´ng viá»‡c Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i", 409);
     }
 
     const soBanGhiDaCapNhat = await suCoModel.nhanCongViecKhanCap(
@@ -1404,7 +1412,7 @@ async function nhanCongViecKhanCap(id, nguoiDungHienTai = {}) {
       kyThuatVienId
     );
     if (soBanGhiDaCapNhat !== 1) {
-      throw taoLoi("Công việc đã có kỹ thuật viên khác nhận", 409);
+      throw taoLoi("CÃ´ng viá»‡c Ä‘Ã£ cÃ³ ká»¹ thuáº­t viÃªn khÃ¡c nháº­n", 409);
     }
 
     await connection.commit();
@@ -1419,10 +1427,10 @@ async function nhanCongViecKhanCap(id, nguoiDungHienTai = {}) {
 }
 
 async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const kyThuatVienId = layIdHopLe(
     nguoiDungHienTai.id,
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   let connection;
   let daBatDauTransaction = false;
@@ -1435,7 +1443,7 @@ async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
     const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
 
     if (!suCo) {
-      throw taoLoi("Không tìm thấy sự cố", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     }
 
     const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
@@ -1460,7 +1468,7 @@ async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
     }
 
     if (suCo.trang_thai !== TRANG_THAI_SU_CO.DA_PHAN_CONG) {
-      throw taoLoi("Chỉ có thể bắt đầu sự cố đã được phân công", 409);
+      throw taoLoi("Chá»‰ cÃ³ thá»ƒ báº¯t Ä‘áº§u sá»± cá»‘ Ä‘Ã£ Ä‘Æ°á»£c phÃ¢n cÃ´ng", 409);
     }
 
     const thietBi = await thietBiModel.timTheoIdDeCapNhat(
@@ -1469,7 +1477,7 @@ async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
     );
 
     if (!thietBi) {
-      throw taoLoi("Không tìm thấy thiết bị của sự cố", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y thiáº¿t bá»‹ cá»§a sá»± cá»‘", 404);
     }
 
     const trangThaiThietBiMoi = layTrangThaiThietBiKhiBatDau(thietBi);
@@ -1480,7 +1488,7 @@ async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
     );
 
     if (soSuCoDaCapNhat !== 1) {
-      throw taoLoi("Trạng thái sự cố đã thay đổi, vui lòng tải lại dữ liệu", 409);
+      throw taoLoi("Tráº¡ng thÃ¡i sá»± cá»‘ Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i dá»¯ liá»‡u", 409);
     }
 
     if (trangThaiThietBiMoi !== thietBi.trang_thai) {
@@ -1491,7 +1499,7 @@ async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
       );
 
       if (soThietBiDaCapNhat !== 1) {
-        throw taoLoi("Không thể cập nhật trạng thái thiết bị", 409);
+        throw taoLoi("KhÃ´ng thá»ƒ cáº­p nháº­t tráº¡ng thÃ¡i thiáº¿t bá»‹", 409);
       }
     }
 
@@ -1520,10 +1528,10 @@ async function batDauXuLySuCo(id, nguoiDungHienTai = {}) {
 }
 
 async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const kyThuatVienId = layIdHopLe(
     nguoiDungHienTai.id,
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   const duLieuMoi = layDuLieuSuaChuaTuBody(duLieu);
   const coDuLieuMoi = Object.values(duLieuMoi).some(
@@ -1531,7 +1539,7 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
   );
 
   if (!coDuLieuMoi) {
-    throw taoLoi("Cần gửi ít nhất một thông tin sửa chữa", 400);
+    throw taoLoi("Cáº§n gá»­i Ã­t nháº¥t má»™t thÃ´ng tin sá»­a chá»¯a", 400);
   }
 
   let connection;
@@ -1545,7 +1553,7 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
 
     if (!suCo) {
-      throw taoLoi("Không tìm thấy sự cố", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     }
 
     const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
@@ -1557,10 +1565,10 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
 
     if (suCo.trang_thai !== TRANG_THAI_SU_CO.DANG_XU_LY) {
       if (suCo.trang_thai === TRANG_THAI_SU_CO.DA_XU_LY) {
-        throw taoLoi("Sự cố đã hoàn thành, không thể sửa hồ sơ", 409);
+        throw taoLoi("Sá»± cá»‘ Ä‘Ã£ hoÃ n thÃ nh, khÃ´ng thá»ƒ sá»­a há»“ sÆ¡", 409);
       }
 
-      throw taoLoi("Chỉ có thể cập nhật hồ sơ khi sự cố đang xử lý", 409);
+      throw taoLoi("Chá»‰ cÃ³ thá»ƒ cáº­p nháº­t há»“ sÆ¡ khi sá»± cá»‘ Ä‘ang xá»­ lÃ½", 409);
     }
 
     const hoSoHienTai = await hoSoSuaChuaModel.timHoSoDangXuLyDeCapNhat(
@@ -1572,7 +1580,7 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
       hoSoHienTai &&
       Number(hoSoHienTai.ky_thuat_vien_id) !== kyThuatVienId
     ) {
-      throw taoLoi("Hồ sơ sửa chữa thuộc về kỹ thuật viên khác", 403);
+      throw taoLoi("Há»“ sÆ¡ sá»­a chá»¯a thuá»™c vá» ká»¹ thuáº­t viÃªn khÃ¡c", 403);
     }
 
     const duLieuHopLe = hopNhatDuLieuSuaChua(duLieuMoi, hoSoHienTai);
@@ -1595,7 +1603,7 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
       );
 
       if (soBanGhiDaCapNhat !== 1) {
-        throw taoLoi("Hồ sơ sửa chữa đã thay đổi, vui lòng tải lại dữ liệu", 409);
+        throw taoLoi("Há»“ sÆ¡ sá»­a chá»¯a Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i dá»¯ liá»‡u", 409);
       }
     } else {
       await hoSoSuaChuaModel.taoHoSoSuaChua(connection, {
@@ -1632,10 +1640,10 @@ async function capNhatHoSoSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
 }
 
 async function choLinhKien(id, duLieu = {}, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
-  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Kỹ thuật viên");
-  const lyDo = layChuoiBatBuoc(duLieu.lyDo, "Lý do", 500);
-  const ghiChu = layChuoiTuyChon(duLieu.ghiChu, "Ghi chú", 1000);
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
+  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Ká»¹ thuáº­t viÃªn");
+  const lyDo = layChuoiBatBuoc(duLieu.lyDo, "LÃ½ do", 500);
+  const ghiChu = layChuoiTuyChon(duLieu.ghiChu, "Ghi chÃº", 1000);
   let connection;
   let daBatDauTransaction = false;
 
@@ -1644,14 +1652,14 @@ async function choLinhKien(id, duLieu = {}, nguoiDungHienTai = {}) {
     await connection.beginTransaction();
     daBatDauTransaction = true;
     const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
-    if (!suCo) throw taoLoi("Không tìm thấy sự cố", 404);
+    if (!suCo) throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
       kyThuatVienId,
       connection
     );
     kiemTraKyThuatVienXuLyHopLe(suCo, kyThuatVienId, kyThuatVien);
     if (suCo.trang_thai !== TRANG_THAI_SU_CO.DANG_XU_LY) {
-      throw taoLoi("Chỉ có thể chờ linh kiện khi công việc đang xử lý", 409);
+      throw taoLoi("Chá»‰ cÃ³ thá»ƒ chá» linh kiá»‡n khi cÃ´ng viá»‡c Ä‘ang xá»­ lÃ½", 409);
     }
     const soBanGhiDaCapNhat = await suCoModel.choLinhKien(
       connection,
@@ -1661,7 +1669,7 @@ async function choLinhKien(id, duLieu = {}, nguoiDungHienTai = {}) {
       ghiChu
     );
     if (soBanGhiDaCapNhat !== 1) {
-      throw taoLoi("Trạng thái công việc đã thay đổi, vui lòng tải lại", 409);
+      throw taoLoi("Tráº¡ng thÃ¡i cÃ´ng viá»‡c Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i", 409);
     }
     await connection.commit();
     daBatDauTransaction = false;
@@ -1675,8 +1683,8 @@ async function choLinhKien(id, duLieu = {}, nguoiDungHienTai = {}) {
 }
 
 async function tiepTucXuLy(id, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
-  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Kỹ thuật viên");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
+  const kyThuatVienId = layIdHopLe(nguoiDungHienTai.id, "Ká»¹ thuáº­t viÃªn");
   let connection;
   let daBatDauTransaction = false;
 
@@ -1685,14 +1693,14 @@ async function tiepTucXuLy(id, nguoiDungHienTai = {}) {
     await connection.beginTransaction();
     daBatDauTransaction = true;
     const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
-    if (!suCo) throw taoLoi("Không tìm thấy sự cố", 404);
+    if (!suCo) throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
       kyThuatVienId,
       connection
     );
     kiemTraKyThuatVienXuLyHopLe(suCo, kyThuatVienId, kyThuatVien);
     if (suCo.trang_thai !== TRANG_THAI_SU_CO.CHO_LINH_KIEN) {
-      throw taoLoi("Công việc không ở trạng thái chờ linh kiện", 409);
+      throw taoLoi("CÃ´ng viá»‡c khÃ´ng á»Ÿ tráº¡ng thÃ¡i chá» linh kiá»‡n", 409);
     }
     const soBanGhiDaCapNhat = await suCoModel.tiepTucXuLy(
       connection,
@@ -1700,7 +1708,7 @@ async function tiepTucXuLy(id, nguoiDungHienTai = {}) {
       kyThuatVienId
     );
     if (soBanGhiDaCapNhat !== 1) {
-      throw taoLoi("Trạng thái công việc đã thay đổi, vui lòng tải lại", 409);
+      throw taoLoi("Tráº¡ng thÃ¡i cÃ´ng viá»‡c Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i", 409);
     }
     await connection.commit();
     daBatDauTransaction = false;
@@ -1714,19 +1722,19 @@ async function tiepTucXuLy(id, nguoiDungHienTai = {}) {
 }
 
 async function layHoSoSuaChuaCuaToi(id, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const kyThuatVienId = layIdHopLe(
     nguoiDungHienTai.id,
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   const suCo = await suCoModel.timTheoId(suCoId);
 
   if (!suCo) {
-    throw taoLoi("Không tìm thấy sự cố", 404);
+    throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
   }
 
   if (Number(suCo.ky_thuat_vien_id) !== kyThuatVienId) {
-    throw taoLoi("Bạn không có quyền xem hồ sơ sửa chữa này", 403);
+    throw taoLoi("Báº¡n khÃ´ng cÃ³ quyá»n xem há»“ sÆ¡ sá»­a chá»¯a nÃ y", 403);
   }
 
   const danhSachHoSo = await hoSoSuaChuaModel.layDanhSachTheoSuCoVaKyThuatVien(
@@ -1742,10 +1750,10 @@ async function layHoSoSuaChuaCuaToi(id, nguoiDungHienTai = {}) {
 }
 
 async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
-  const suCoId = layIdHopLe(id, "Sự cố");
+  const suCoId = layIdHopLe(id, "Sá»± cá»‘");
   const kyThuatVienId = layIdHopLe(
     nguoiDungHienTai.id,
-    "Kỹ thuật viên"
+    "Ká»¹ thuáº­t viÃªn"
   );
   const duLieuMoi = layDuLieuSuaChuaTuBody(duLieu);
   let connection;
@@ -1759,7 +1767,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
 
     if (!suCo) {
-      throw taoLoi("Không tìm thấy sự cố", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y sá»± cá»‘", 404);
     }
 
     const kyThuatVien = await nguoiDungModel.timTheoIdDeCapNhat(
@@ -1770,11 +1778,11 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     kiemTraKyThuatVienXuLyHopLe(suCo, kyThuatVienId, kyThuatVien);
 
     if (suCo.trang_thai === TRANG_THAI_SU_CO.DA_XU_LY) {
-      throw taoLoi("Sự cố đã hoàn thành trước đó", 409);
+      throw taoLoi("Sá»± cá»‘ Ä‘Ã£ hoÃ n thÃ nh trÆ°á»›c Ä‘Ã³", 409);
     }
 
     if (suCo.trang_thai !== TRANG_THAI_SU_CO.DANG_XU_LY) {
-      throw taoLoi("Chỉ có thể hoàn thành sự cố đang xử lý", 409);
+      throw taoLoi("Chá»‰ cÃ³ thá»ƒ hoÃ n thÃ nh sá»± cá»‘ Ä‘ang xá»­ lÃ½", 409);
     }
 
     const thietBi = await thietBiModel.timTheoIdDeCapNhat(
@@ -1783,7 +1791,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     );
 
     if (!thietBi) {
-      throw taoLoi("Không tìm thấy thiết bị của sự cố", 404);
+      throw taoLoi("KhÃ´ng tÃ¬m tháº¥y thiáº¿t bá»‹ cá»§a sá»± cá»‘", 404);
     }
 
     const hoSoHienTai = await hoSoSuaChuaModel.timHoSoDangXuLyDeCapNhat(
@@ -1795,7 +1803,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
       hoSoHienTai &&
       Number(hoSoHienTai.ky_thuat_vien_id) !== kyThuatVienId
     ) {
-      throw taoLoi("Hồ sơ sửa chữa thuộc về kỹ thuật viên khác", 403);
+      throw taoLoi("Há»“ sÆ¡ sá»­a chá»¯a thuá»™c vá» ká»¹ thuáº­t viÃªn khÃ¡c", 403);
     }
 
     const duLieuHopLe = hopNhatDuLieuSuaChua(
@@ -1824,7 +1832,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
       );
 
       if (soHoSoDaCapNhat !== 1) {
-        throw taoLoi("Hồ sơ sửa chữa đã hoàn thành trước đó", 409);
+        throw taoLoi("Há»“ sÆ¡ sá»­a chá»¯a Ä‘Ã£ hoÃ n thÃ nh trÆ°á»›c Ä‘Ã³", 409);
       }
     } else {
       await hoSoSuaChuaModel.taoHoSoSuaChua(connection, {
@@ -1852,7 +1860,7 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
     );
 
     if (soSuCoDaCapNhat !== 1) {
-      throw taoLoi("Trạng thái sự cố đã thay đổi, vui lòng tải lại dữ liệu", 409);
+      throw taoLoi("Tráº¡ng thÃ¡i sá»± cá»‘ Ä‘Ã£ thay Ä‘á»•i, vui lÃ²ng táº£i láº¡i dá»¯ liá»‡u", 409);
     }
 
     if (trangThaiThietBiMoi !== thietBi.trang_thai) {
@@ -1863,14 +1871,14 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
       );
 
       if (soThietBiDaCapNhat !== 1) {
-        throw taoLoi("Không thể cập nhật trạng thái thiết bị", 409);
+        throw taoLoi("KhÃ´ng thá»ƒ cáº­p nháº­t tráº¡ng thÃ¡i thiáº¿t bá»‹", 409);
       }
     }
 
     await thongBaoModel.taoThongBao({
       nguoiDungId: suCo.nguoi_bao_id,
-      tieuDe: `Sự cố ${suCo.ma_su_co} đã được xử lý`,
-      noiDung: `Sự cố ${suCo.ma_su_co} của thiết bị ${thietBi.ma_thiet_bi} đã được xử lý với kết quả ${duLieuHopLe.ketQua}.`,
+      tieuDe: `Sá»± cá»‘ ${suCo.ma_su_co} Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½`,
+      noiDung: `Sá»± cá»‘ ${suCo.ma_su_co} cá»§a thiáº¿t bá»‹ ${thietBi.ma_thiet_bi} Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½ vá»›i káº¿t quáº£ ${duLieuHopLe.ketQua}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);

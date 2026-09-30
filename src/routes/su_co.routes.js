@@ -1,4 +1,4 @@
-const express = require("express");
+﻿const express = require("express");
 
 const VAI_TRO = require("../constants/vai_tro");
 const suCoController = require("../controllers/su_co.controller");
@@ -30,6 +30,12 @@ router.get(
   "/cua-toi/:id",
   phanQuyen(VAI_TRO.NHAN_VIEN),
   suCoController.layChiTietSuCoCuaToi
+);
+
+router.patch(
+  "/cua-toi/:id/xac-nhan",
+  phanQuyen(VAI_TRO.NHAN_VIEN),
+  suCoController.xacNhanHoanThanhSuCo
 );
 
 router.get(

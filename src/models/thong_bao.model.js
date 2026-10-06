@@ -73,7 +73,7 @@ async function demThongBao(nguoiDungId) {
 async function timTheoIdCuaNguoiDung(id, nguoiDungId) {
   const [[thongBao]] = await pool.execute(
     `
-      SELECT id
+      SELECT id, da_doc
       FROM thong_bao
       WHERE id = ?
         AND nguoi_dung_id = ?
@@ -115,6 +115,20 @@ async function danhDauTatCaDaDoc(nguoiDungId) {
   return ketQua.affectedRows;
 }
 
+async function xoaThongBaoDaDoc(id, nguoiDungId) {
+  const [ketQua] = await pool.execute(
+    `
+      DELETE FROM thong_bao
+      WHERE id = ?
+        AND nguoi_dung_id = ?
+        AND da_doc = 1
+    `,
+    [id, nguoiDungId]
+  );
+
+  return ketQua.affectedRows > 0;
+}
+
 async function daTonTaiThongBaoTrongNgay({
   nguoiDungId,
   tieuDe,
@@ -147,5 +161,6 @@ module.exports = {
   timTheoIdCuaNguoiDung,
   danhDauDaDoc,
   danhDauTatCaDaDoc,
+  xoaThongBaoDaDoc,
   daTonTaiThongBaoTrongNgay
 };

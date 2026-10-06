@@ -15,5 +15,6 @@ router.use(
 router.get("/", thongBaoController.layDanhSachThongBao);
 router.patch("/da-doc-tat-ca", thongBaoController.danhDauTatCaDaDoc);
 router.patch("/:id/da-doc", thongBaoController.danhDauDaDoc);
+router.delete("/:id", thongBaoController.xoaThongBaoDaDoc);
 
 module.exports = router;

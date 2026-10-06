@@ -596,10 +596,26 @@ function dinhDangKetQuaSuaChuaChoNhanVien(hoSo) {
   }
 
   return {
+    nguyenNhan: hoSo.nguyen_nhan,
     ketQua: hoSo.ket_qua,
     cachXuLy: hoSo.cach_xu_ly,
+    linhKienThayThe: chuyenJsonThanhDanhSachLinhKien(
+      hoSo.linh_kien_thay_the
+    ),
+    ghiChu: hoSo.ghi_chu,
+    hinhAnhSuaChua: chuyenJsonThanhMang(hoSo.hinh_anh),
     thoiGianHoanThanh: hoSo.thoi_gian_hoan_thanh
   };
+}
+
+function layNhanKetQuaSuaChua(ketQua) {
+  const danhSachNhan = {
+    [KET_QUA_SUA_CHUA.DA_SUA_XONG]: "Hoạt động bình thường",
+    [KET_QUA_SUA_CHUA.SUA_MOT_PHAN]: "Cần theo dõi",
+    [KET_QUA_SUA_CHUA.KHONG_SUA_DUOC]: "Không thể vận hành"
+  };
+
+  return danhSachNhan[ketQua] || ketQua;
 }
 
 function kiemTraKyThuatVienXuLyHopLe(
@@ -849,8 +865,8 @@ async function taoThongBaoSuCoNghiemTrong(
   for (const quanTriVien of danhSachQuanTriVien) {
     await thongBaoModel.taoThongBao({
       nguoiDungId: quanTriVien.id,
-      tieuDe: `Sá»± cá»‘ nghiÃªm trá»ng ${maSuCo}`,
-      noiDung: `Thiáº¿t bá»‹ ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vá»«a Ä‘Æ°á»£c bÃ¡o sá»± cá»‘ nghiÃªm trá»ng: ${tieuDe}.`,
+      tieuDe: `Sự cố nghiêm trọng ${maSuCo}`,
+      noiDung: `Thiết bị ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vừa được báo sự cố nghiêm trọng: ${tieuDe}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -865,8 +881,8 @@ async function taoThongBaoSuCoNghiemTrong(
   for (const kyThuatVien of danhSachKyThuatVien) {
     await thongBaoModel.taoThongBao({
       nguoiDungId: kyThuatVien.id,
-      tieuDe: `Kháº©n cáº¥p ${maSuCo}`,
-      noiDung: `Thiáº¿t bá»‹ ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vá»«a phÃ¡t sinh sá»± cá»‘ kháº©n cáº¥p: ${tieuDe}.`,
+      tieuDe: `Khẩn cấp ${maSuCo}`,
+      noiDung: `Thiết bị ${thietBi.ma_thiet_bi} - ${thietBi.ten_thiet_bi} vừa phát sinh sự cố khẩn cấp: ${tieuDe}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -940,10 +956,13 @@ async function taoSuCo(duLieu = {}, nguoiDungHienTai = {}) {
       thoiGianXayRa: duLieuHopLe.thoiGianXayRa
     });
 
-    if (thietBi.trang_thai !== TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG) {
+    if (
+      thietBi.trang_thai !== TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG &&
+      thietBi.trang_thai !== TRANG_THAI_THIET_BI.DANG_HONG
+    ) {
       await thietBiModel.capNhatTrangThai(
         thietBi.id,
-        TRANG_THAI_THIET_BI.NGUNG_HOAT_DONG,
+        TRANG_THAI_THIET_BI.DANG_HONG,
         connection
       );
     }
@@ -1202,8 +1221,8 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
 
     await thongBaoModel.taoThongBao({
       nguoiDungId: kyThuatVienId,
-      tieuDe: `PhÃ¢n cÃ´ng sá»± cá»‘ ${suCo.ma_su_co}`,
-      noiDung: `Báº¡n vá»«a Ä‘Æ°á»£c phÃ¢n cÃ´ng xá»­ lÃ½ sá»± cá»‘ ${suCo.ma_su_co}: ${suCo.tieu_de}.`,
+      tieuDe: `Phân công sự cố ${suCo.ma_su_co}`,
+      noiDung: `Bạn vừa được phân công xử lý sự cố ${suCo.ma_su_co}: ${suCo.tieu_de}.`,
       loaiThongBao: LOAI_THONG_BAO.PHAN_CONG,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -1211,8 +1230,8 @@ async function phanCongKyThuatVien(id, duLieu = {}) {
     if (kyThuatVienCuId) {
       await thongBaoModel.taoThongBao({
         nguoiDungId: kyThuatVienCuId,
-        tieuDe: `Thay Ä‘á»•i phÃ¢n cÃ´ng sá»± cá»‘ ${suCo.ma_su_co}`,
-        noiDung: `Sá»± cá»‘ ${suCo.ma_su_co} Ä‘Ã£ Ä‘Æ°á»£c quáº£n trá»‹ viÃªn phÃ¢n cÃ´ng láº¡i cho ká»¹ thuáº­t viÃªn khÃ¡c.`,
+        tieuDe: `Thay đổi phân công sự cố ${suCo.ma_su_co}`,
+        noiDung: `Sự cố ${suCo.ma_su_co} đã được quản trị viên phân công lại cho kỹ thuật viên khác.`,
         loaiThongBao: LOAI_THONG_BAO.PHAN_CONG,
         doiTuongLienQuanId: suCoId
       }, connection);
@@ -1877,8 +1896,8 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
 
     await thongBaoModel.taoThongBao({
       nguoiDungId: suCo.nguoi_bao_id,
-      tieuDe: `Sá»± cá»‘ ${suCo.ma_su_co} Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½`,
-      noiDung: `Sá»± cá»‘ ${suCo.ma_su_co} cá»§a thiáº¿t bá»‹ ${thietBi.ma_thiet_bi} Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½ vá»›i káº¿t quáº£ ${duLieuHopLe.ketQua}.`,
+      tieuDe: `Sự cố ${suCo.ma_su_co} đã được xử lý`,
+      noiDung: `Sự cố ${suCo.ma_su_co} của thiết bị ${thietBi.ma_thiet_bi} đã được xử lý với kết quả: ${layNhanKetQuaSuaChua(duLieuHopLe.ketQua)}.`,
       loaiThongBao: LOAI_THONG_BAO.SU_CO,
       doiTuongLienQuanId: suCoId
     }, connection);
@@ -1904,6 +1923,58 @@ async function hoanThanhSuaChua(id, duLieu = {}, nguoiDungHienTai = {}) {
   }
 }
 
+async function xacNhanHoanThanhSuCo(id, nguoiDungHienTai = {}) {
+  const suCoId = layIdHopLe(id, "Sự cố");
+  const nguoiBaoId = layIdHopLe(nguoiDungHienTai.id, "Người báo");
+  let connection;
+  let daBatDauTransaction = false;
+
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    daBatDauTransaction = true;
+
+    const suCo = await suCoModel.timTheoIdDeCapNhat(suCoId, connection);
+    if (!suCo) {
+      throw taoLoi("Không tìm thấy sự cố", 404);
+    }
+    if (Number(suCo.nguoi_bao_id) !== nguoiBaoId) {
+      throw taoLoi("Bạn không có quyền xác nhận sự cố này", 403);
+    }
+    if (suCo.trang_thai === TRANG_THAI_SU_CO.DA_XU_LY) {
+      throw taoLoi("Sự cố đã được xác nhận trước đó", 409);
+    }
+    if (suCo.trang_thai !== TRANG_THAI_SU_CO.CHO_XAC_NHAN) {
+      throw taoLoi("Sự cố chưa sẵn sàng để xác nhận", 409);
+    }
+
+    const thoiGianHoanThanh = await suCoModel.layThoiGianHienTai(connection);
+    const soBanGhiDaCapNhat = await suCoModel.xacNhanHoanThanh(
+      connection,
+      suCoId,
+      nguoiBaoId,
+      thoiGianHoanThanh
+    );
+    if (soBanGhiDaCapNhat !== 1) {
+      throw taoLoi("Trạng thái sự cố đã thay đổi, vui lòng tải lại dữ liệu", 409);
+    }
+
+    await connection.commit();
+    daBatDauTransaction = false;
+  } catch (loi) {
+    if (connection && daBatDauTransaction) {
+      await connection.rollback();
+    }
+    throw loi;
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+
+  return layChiTietSuCoCuaToi(suCoId, nguoiDungHienTai);
+}
+
 module.exports = {
   taoSuCo,
   layDanhSachSuCoCuaToi,
@@ -1920,5 +1991,6 @@ module.exports = {
   choLinhKien,
   tiepTucXuLy,
   layHoSoSuaChuaCuaToi,
-  hoanThanhSuaChua
+  hoanThanhSuaChua,
+  xacNhanHoanThanhSuCo
 };

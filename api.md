@@ -615,6 +615,7 @@ Danh sách kỹ thuật viên nhận `trang`, `gioiHan`, `tuKhoa`.
 | `GET` | `/api/thong-bao` | Người dùng đã đăng nhập | Danh sách thông báo của chính người dùng |
 | `PATCH` | `/api/thong-bao/:id/da-doc` | Chủ thông báo | Đánh dấu một thông báo đã đọc |
 | `PATCH` | `/api/thong-bao/da-doc-tat-ca` | Người dùng đã đăng nhập | Đánh dấu toàn bộ thông báo đã đọc |
+| `DELETE` | `/api/thong-bao/:id` | Chủ thông báo | Xóa một thông báo đã đọc |
 
 API danh sách nhận `trang`, `gioiHan` và trả thêm `tongChuaDoc`. Thông báo sự cố nghiêm trọng có `loaiThongBao = SU_CO`; `doiTuongLienQuanId` là ID sự cố để ứng dụng mở đúng chi tiết công việc.
 

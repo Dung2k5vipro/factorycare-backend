@@ -48,8 +48,26 @@ async function danhDauTatCaDaDoc(req, res, next) {
   }
 }
 
+async function xoaThongBaoDaDoc(req, res, next) {
+  try {
+    const ketQua = await thongBaoService.xoaThongBaoDaDoc(
+      req.params.id,
+      req.nguoiDung.id
+    );
+
+    return res.status(200).json({
+      thanhCong: true,
+      thongBao: "Đã xóa thông báo",
+      duLieu: ketQua
+    });
+  } catch (loi) {
+    return next(loi);
+  }
+}
+
 module.exports = {
   layDanhSachThongBao,
   danhDauDaDoc,
-  danhDauTatCaDaDoc
+  danhDauTatCaDaDoc,
+  xoaThongBaoDaDoc
 };

@@ -147,6 +147,18 @@ function taoDieuKienLoc({
 function taoCauSapXep() {
   return `
     ORDER BY
+      CASE
+        WHEN sc.trang_thai = 'MOI' THEN 1
+        WHEN sc.trang_thai IN (
+          'DA_PHAN_CONG',
+          'DANG_XU_LY',
+          'CHO_LINH_KIEN',
+          'CHO_XAC_NHAN'
+        ) THEN 2
+        WHEN sc.trang_thai = 'DA_XU_LY' THEN 3
+        WHEN sc.trang_thai = 'DA_HUY' THEN 4
+        ELSE 5
+      END,
       CASE sc.muc_do
         WHEN 'NGHIEM_TRONG' THEN 1
         WHEN 'CAO' THEN 2

@@ -90,8 +90,34 @@ async function danhDauTatCaDaDoc(nguoiDungId) {
   return { soLuongDaCapNhat };
 }
 
+async function xoaThongBaoDaDoc(id, nguoiDungId) {
+  const thongBaoId = laySoNguyenDuong(id, "Id thông báo");
+  const thongBao = await thongBaoModel.timTheoIdCuaNguoiDung(
+    thongBaoId,
+    nguoiDungId
+  );
+
+  if (!thongBao) {
+    throw taoLoi("Không tìm thấy thông báo", 404);
+  }
+  if (!Boolean(thongBao.da_doc)) {
+    throw taoLoi("Chỉ có thể xóa thông báo đã đọc", 409);
+  }
+
+  const daXoa = await thongBaoModel.xoaThongBaoDaDoc(
+    thongBaoId,
+    nguoiDungId
+  );
+  if (!daXoa) {
+    throw taoLoi("Thông báo đã thay đổi, vui lòng tải lại dữ liệu", 409);
+  }
+
+  return { id: thongBaoId };
+}
+
 module.exports = {
   layDanhSachThongBao,
   danhDauDaDoc,
-  danhDauTatCaDaDoc
+  danhDauTatCaDaDoc,
+  xoaThongBaoDaDoc
 };
